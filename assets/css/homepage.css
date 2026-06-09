@@ -110,59 +110,93 @@ body[data-hero="3"] #hero-3 { display: block; }
   letter-spacing: .02em;
 }
 
-/* Visual side */
-.hero2 .visual { position: relative; }
-
-/* Actual image */
-.hero2 .visual img {
-  height: 560px;
-  border-radius: var(--r-lg);
-  box-shadow: 0 44px 80px -30px rgba(0,0,0,.65),
-              0 0 0 1px rgba(220,192,104,.18);
-  width: 100%; object-fit: cover;
-}
-
-/* Placeholder when no image uploaded — styled as a prestige panel */
-.hero2 .visual .ph {
-  height: 560px;
-  border-radius: var(--r-lg);
-  box-shadow: 0 44px 80px -30px rgba(0,0,0,.65);
-  background:
-    radial-gradient(ellipse 100% 80% at 50% 20%, rgba(201,162,58,.14), transparent 55%),
-    repeating-linear-gradient(135deg, rgba(255,255,255,.04) 0 12px, rgba(255,255,255,.07) 12px 24px),
-    var(--green-800);
-  border: 1px solid rgba(220,192,104,.18);
-}
-.hero2 .visual .ph::after {
-  color: rgba(220,192,104,.65);
-  background: rgba(7,50,31,.72);
-  border-color: rgba(220,192,104,.22);
-  backdrop-filter: blur(4px);
-}
-
-/* Badge floats — glassmorphism on dark bg */
-.hero2 .badge-float {
+/* Background watermark */
+.hero2 .hero-bg-img {
   position: absolute;
-  background: rgba(13,56,34,.72);
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  border: 1px solid rgba(255,255,255,.14);
-  border-radius: var(--r);
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Badge panel side */
+.hero2 .badge-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: clamp(20px, 4vw, 60px);
+  position: relative;
+  z-index: 3;
+}
+.hero2 .badge-card {
+  background: rgba(13,56,34,.65);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: var(--r-lg);
   box-shadow:
-    0 8px 32px rgba(0,0,0,.35),
-    0 1px 0 rgba(255,255,255,.07) inset;
-  padding: 16px 22px;
-  display: flex; align-items: center; gap: 14px;
+    0 20px 40px -15px rgba(0,0,0,.5),
+    0 1px 0 rgba(255,255,255,.06) inset;
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 380px;
+  transition: transform .3s ease, border-color .3s ease, background .3s ease;
 }
-.hero2 .bf1 { top: 28px; left: -26px; }
-.hero2 .bf2 { bottom: 32px; right: -22px; }
-.hero2 .badge-float img.crest { width: 44px; height: 44px; }
-.hero2 .badge-float .bn {
+.hero2 .badge-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(220,192,104,.35);
+  background: rgba(13,56,34,.8);
+}
+.hero2 .badge-card.card-awards {
+  align-self: flex-end;
+}
+.hero2 .badge-card .crest-wrap {
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.06);
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.1);
+  flex-shrink: 0;
+}
+.hero2 .badge-card .icon-wrap {
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(201,162,58,.12);
+  border-radius: 50%;
+  border: 1px solid rgba(201,162,58,.25);
+  flex-shrink: 0;
+}
+.hero2 .badge-card .icon-wrap .diamond {
+  width: 16px;
+  height: 16px;
+  background: var(--gold-400);
+}
+.hero2 .badge-card .bn {
   font-family: var(--ff-display);
-  font-size: 26px; font-weight: 600;
-  color: var(--gold-300); line-height: 1;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--gold-300);
+  line-height: 1;
 }
-.hero2 .badge-float .bl { font-size: 12.5px; color: rgba(255,255,255,.62); margin-top: 3px; }
+.hero2 .badge-card .bl {
+  font-size: 13.5px;
+  color: rgba(255,255,255,.7);
+  margin-top: 5px;
+  font-weight: 500;
+}
 
 /* -----------------------------------------------------------------------
    Hero 3 — Crest forward, centered
@@ -417,10 +451,20 @@ body[data-hero="3"] #hero-3 { display: block; }
 @media (max-width: 980px) {
   .why-grid, .ach-grid, .fac-grid, .news-grid, .test-grid { grid-template-columns: 1fr 1fr; }
   .hero2 .grid2, .principal .grid2, .results-grid, .contact-grid { grid-template-columns: 1fr; }
-  .hero2 .visual { order: -1; }
-  .hero2 .visual .ph, .hero2 .visual img { height: 380px; }
-  .hero2 .bf1 { left: 0; }
-  .hero2 .bf2 { right: 0; }
+  .hero2 .badge-panel {
+    padding-left: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    width: 100%;
+    margin-top: 36px;
+  }
+  .hero2 .badge-card,
+  .hero2 .badge-card.card-awards {
+    max-width: calc(50% - 8px);
+    align-self: stretch;
+  }
   .hero3 .stat-strip { grid-template-columns: 1fr 1fr; }
   .life-grid { grid-template-columns: 1fr 1fr; }
   .gal-grid { grid-template-columns: 1fr 1fr 1fr; }
@@ -433,14 +477,16 @@ body[data-hero="3"] #hero-3 { display: block; }
   .life-tile.big, .life-tile.wide { grid-column: span 1; grid-row: span 1; }
   .hero1 .accolades { gap: 12px 22px; }
   .hero2 .mini-stats { flex-wrap: wrap; gap: 22px 32px; }
-  .hero2 .badge-float { display: none; } /* hide on small screens */
+  .hero2 .badge-card,
+  .hero2 .badge-card.card-awards {
+    max-width: 100%;
+  }
   .hero2 { padding: 48px 0; }
   .hero2 .grid2 { gap: 24px; }
   .hero3 { padding: 48px 0; }
   .hero1 .container { padding-top: 64px; padding-bottom: 48px; }
 }
 @media (max-width: 480px) {
-  .hero2 .visual .ph, .hero2 .visual img { height: 260px; }
   .hero-variant .cta-row { flex-direction: column; align-items: stretch; width: 100%; }
   .hero-variant .cta-row .btn { text-align: center; justify-content: center; }
 }

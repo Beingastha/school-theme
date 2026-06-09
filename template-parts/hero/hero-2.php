@@ -35,6 +35,9 @@ if ( str_contains( $h1, 'Excellence' ) ) {
 ?>
 <section class="hero-variant" id="hero-2">
 	<div class="hero2">
+		<?php if ( $hero_img_url ) : ?>
+			<div class="hero-bg-img" style="background-image: url('<?php echo esc_url( $hero_img_url ); ?>');"></div>
+		<?php endif; ?>
 		<div class="container grid2">
 
 			<!-- Left: text -->
@@ -96,28 +99,28 @@ if ( str_contains( $h1, 'Excellence' ) ) {
 				</div>
 			</div>
 
-			<!-- Right: visual -->
-			<div class="visual hero-enter-right" data-delay="2">
-				<?php if ( $hero_img_url ) : ?>
-					<img src="<?php echo esc_url( $hero_img_url ); ?>" alt="<?php esc_attr_e( 'School campus', 'excellence-school' ); ?>" />
-				<?php else : ?>
-					<div class="ph" data-label="campus-front.jpg — 720×900"></div>
-				<?php endif; ?>
-
-				<div class="badge-float bf1">
-					<?php esb_logo(); ?>
+			<!-- Right: badge panel -->
+			<div class="badge-panel hero-enter-right" data-delay="2">
+				<div class="badge-card card-a-plus">
+					<div class="crest-wrap">
+						<?php esb_logo(); ?>
+					</div>
 					<div>
 						<div class="bn">A+</div>
 						<div class="bl" data-en="Excellence Grade" data-hi="उत्कृष्टता श्रेणी"><?php esc_html_e( 'Excellence Grade', 'excellence-school' ); ?></div>
 					</div>
 				</div>
-				<div class="badge-float bf2">
+				<div class="badge-card card-awards">
+					<div class="icon-wrap">
+						<span class="diamond"></span>
+					</div>
 					<div>
 						<div class="bn">150+</div>
 						<div class="bl" data-en="State & District Awards" data-hi="राज्य व जिला पुरस्कार"><?php esc_html_e( 'State & District Awards', 'excellence-school' ); ?></div>
 					</div>
 				</div>
 			</div>
+
 
 		</div>
 	</div>

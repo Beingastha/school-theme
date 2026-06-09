@@ -79,7 +79,8 @@ For sections containing card grids, you can add, edit, or delete items using sta
 ### 1. Why Choose Us Cards (CPT override)
 * **What are the default cards?**
   To keep the page looking complete, the theme has 6 pre-configured static features built-in (Academic Rigour, Modern Infrastructure, etc.).
-* **How to customize features**:
+  - **Editing Default Cards**: If you choose not to use the custom post type yet, you can edit the English titles and descriptions of the 6 default cards in the **Page Content** dashboard under the **🏠 Home** tab. The Hindi translations for these default cards utilize integrated defaults in the template file.
+* **How to customize features (Recommended)**:
   1. Click on **Why Choose Us** in your sidebar and click **Add Feature Card**.
   2. Enter the English title in the main title input and write the English description in the main editor.
   3. Expand the **Hindi Translation** box below the editor:

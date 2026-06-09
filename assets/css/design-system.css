@@ -402,5 +402,6 @@ p { margin: 0; text-wrap: pretty; }
 }
 
 /* ---------- Bilingual Visibility ---------- */
+[data-lang-show="hi"] { display: none; }
 html[data-lang="hi"] [data-lang-show="en"] { display: none; }
-html[data-lang="en"] [data-lang-show="hi"] { display: none; }
+html[data-lang="hi"] [data-lang-show="hi"] { display: block; }

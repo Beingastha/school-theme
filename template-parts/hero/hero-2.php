@@ -27,7 +27,7 @@ $h1_rendered = $h1;
 if ( str_contains( $h1, 'Excellence' ) ) {
 	$h1_rendered = str_replace(
 		'Excellence',
-		'<span class="type-cycle" data-words="' . esc_attr( $cycle_words ) . '" aria-label="Excellence">Excellence</span>',
+		'<span class="type-cycle" data-words="' . esc_attr( $cycle_words ) . '" aria-label="Excellence">Excellence</span><br>',
 		$h1,
 		$count
 	);
@@ -38,10 +38,10 @@ if ( str_contains( $h1, 'Excellence' ) ) {
 		<?php if ( $hero_img_url ) : ?>
 			<div class="hero-bg-img" style="background-image: url('<?php echo esc_url( $hero_img_url ); ?>');"></div>
 		<?php endif; ?>
-		<div class="container grid2">
+		<div class="container">
 
-			<!-- Left: text -->
-			<div>
+			<!-- Hero Content -->
+			<div class="hero2-content">
 				<span class="eyebrow light hero-enter" data-delay="1"
 				      data-en="<?php echo esc_attr( $eyebrow ); ?>"
 				      data-hi="<?php echo esc_attr( $eyebrow_hi ); ?>">
@@ -57,11 +57,12 @@ if ( str_contains( $h1, 'Excellence' ) ) {
 							'data-words'  => [],
 							'aria-label'  => [],
 						],
+						'br'   => [],
 					] );
 					?>
 				</h1>
 				<h1 class="hero-enter" data-delay="2" data-lang-show="hi">
-					जहाँ उत्कृष्टता एक आदत बन जाती है।
+					जहाँ उत्कृष्टता<br>एक आदत बन जाती है।
 				</h1>
 
 				<p class="sub hero-enter" data-delay="3"
@@ -95,28 +96,6 @@ if ( str_contains( $h1, 'Excellence' ) ) {
 					<div class="reveal">
 						<div class="n"><?php echo esc_html( (int) gmdate( 'Y' ) - (int) $estd ); ?></div>
 						<div class="l" data-en="Years of Service" data-hi="वर्षों की सेवा"><?php esc_html_e( 'Years of Service', 'excellence-school' ); ?></div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Right: badge panel -->
-			<div class="badge-panel hero-enter-right" data-delay="2">
-				<div class="badge-card card-a-plus">
-					<div class="crest-wrap">
-						<?php esb_logo(); ?>
-					</div>
-					<div>
-						<div class="bn">A+</div>
-						<div class="bl" data-en="Excellence Grade" data-hi="उत्कृष्टता श्रेणी"><?php esc_html_e( 'Excellence Grade', 'excellence-school' ); ?></div>
-					</div>
-				</div>
-				<div class="badge-card card-awards">
-					<div class="icon-wrap">
-						<span class="diamond"></span>
-					</div>
-					<div>
-						<div class="bn">150+</div>
-						<div class="bl" data-en="State & District Awards" data-hi="राज्य व जिला पुरस्कार"><?php esc_html_e( 'State & District Awards', 'excellence-school' ); ?></div>
 					</div>
 				</div>
 			</div>

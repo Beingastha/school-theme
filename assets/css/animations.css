@@ -1,0 +1,269 @@
+/* ============================================================
+   Excellence School — Animation Layer
+   GPU-safe: transform + opacity only.
+   All decorative motion cancelled by prefers-reduced-motion.
+   ============================================================ */
+
+/* ---- Keyframes ------------------------------------------- */
+
+@keyframes esb-fade-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes esb-slide-right {
+  from { opacity: 0; transform: translateX(36px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes esb-scale-in {
+  from { opacity: 0; transform: scale(.82); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes esb-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes esb-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes esb-shimmer {
+  from { background-position: -200% center; }
+  to   { background-position:  200% center; }
+}
+
+@keyframes esb-glow-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,162,58,.45); }
+  55%       { box-shadow: 0 0 0 7px rgba(201,162,58,0); }
+}
+
+@keyframes esb-line-grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes esb-stat-pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+
+/* ---- Hero entrance ---------------------------------------- */
+/* Elements in the hero animate on page load, no JS trigger needed */
+
+.hero-enter {
+  opacity: 1;
+  transform: translateY(0);
+  animation: esb-fade-up .75s cubic-bezier(.16,1,.3,1) both;
+}
+.hero-enter-right {
+  opacity: 1;
+  transform: translateX(0);
+  animation: esb-slide-right .85s cubic-bezier(.16,1,.3,1) both;
+}
+.hero-enter-scale {
+  opacity: 1;
+  transform: scale(1);
+  animation: esb-scale-in .65s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+
+/* Sequential delays — 1 through 6 */
+[data-delay="1"] { animation-delay:  80ms; }
+[data-delay="2"] { animation-delay: 220ms; }
+[data-delay="3"] { animation-delay: 370ms; }
+[data-delay="4"] { animation-delay: 510ms; }
+[data-delay="5"] { animation-delay: 660ms; }
+[data-delay="6"] { animation-delay: 810ms; }
+
+
+/* ---- Typewriter / Text cycler ----------------------------- */
+
+/* The cycling word — rendered in gold */
+.type-cycle {
+  color: var(--gold-500);
+  display: inline;
+  /* keep word width stable during typing: clip to current length */
+}
+
+/* On dark hero backgrounds */
+#hero-1 .type-cycle,
+#hero-3 .type-cycle { color: var(--gold-400); }
+
+/* Blinking cursor injected by JS */
+.type-cursor {
+  display: inline-block;
+  width: 3px;
+  height: .82em;
+  background: var(--gold-500);
+  margin-left: 1px;
+  vertical-align: middle;
+  border-radius: 2px;
+  animation: esb-cursor-blink .9s step-end infinite;
+}
+#hero-1 .type-cursor,
+#hero-3 .type-cursor { background: var(--gold-400); }
+
+
+/* ---- Stagger reveals in grid containers ------------------- */
+/* .stagger-grid children get nth-child delays;
+   JS also sets inline transition-delay for robustness. */
+
+.stagger-grid .reveal:nth-child(1) { transition-delay:   0ms; }
+.stagger-grid .reveal:nth-child(2) { transition-delay:  90ms; }
+.stagger-grid .reveal:nth-child(3) { transition-delay: 180ms; }
+.stagger-grid .reveal:nth-child(4) { transition-delay: 270ms; }
+.stagger-grid .reveal:nth-child(5) { transition-delay: 360ms; }
+.stagger-grid .reveal:nth-child(6) { transition-delay: 450ms; }
+
+/* Stagger for section-head eyebrow → h2 → p */
+.section-head .eyebrow { transition-delay:   0ms; }
+.section-head h2        { transition-delay:  70ms; }
+.section-head p         { transition-delay: 155ms; }
+
+
+/* ---- Improved .reveal base -------------------------------- */
+/* Upgrade from a plain fade to a slight blur+lift */
+
+.reveal {
+  transition: opacity .65s ease,
+              transform .65s cubic-bezier(.16,1,.3,1),
+              filter .55s ease;
+  filter: blur(2px);
+}
+.reveal.in { filter: blur(0); }
+
+
+/* ---- Slide-in reveal variants ----------------------------- */
+
+.reveal-left  {
+  opacity: 0; transform: translateX(-30px);
+  transition: opacity .7s ease, transform .7s cubic-bezier(.16,1,.3,1);
+}
+.reveal-left.in  { opacity: 1; transform: translateX(0); }
+
+.reveal-right {
+  opacity: 0; transform: translateX(30px);
+  transition: opacity .7s ease, transform .7s cubic-bezier(.16,1,.3,1);
+}
+.reveal-right.in { opacity: 1; transform: translateX(0); }
+
+
+/* ---- Floating badge cards (hero 2) ------------------------ */
+
+.badge-float {
+  animation: esb-float 4.8s ease-in-out infinite;
+  will-change: transform;
+}
+.bf2 { animation-delay: -2.4s; } /* offset so bf1 & bf2 don't sync */
+
+
+/* ---- Gold shimmer on primary button ----------------------- */
+/* Uses ::before so ::after is free for the .btn-arrow "→" */
+
+.btn-gold::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    108deg,
+    transparent 35%,
+    rgba(255,255,255,.28) 50%,
+    transparent 65%
+  );
+  background-size: 220% 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s;
+}
+.btn-gold:hover::before {
+  opacity: 1;
+  animation: esb-shimmer .6s linear;
+}
+
+
+/* ---- Diamond pulse ---------------------------------------- */
+
+.diamond { animation: esb-glow-ring 3s ease-in-out infinite; }
+/* Larger diamonds in section icons pulse more visibly */
+.why-card .ic .diamond { animation-duration: 2.6s; }
+
+
+/* ---- Stat number pop on entry ----------------------------- */
+/* Triggered once when count-up finishes (class added by JS) */
+
+.stat-popped { animation: esb-stat-pop .38s cubic-bezier(.34,1.56,.64,1); }
+
+
+/* ---- Section gold rule grow ------------------------------- */
+/* .eyebrow has a bottom-border line; animate it on reveal */
+
+.reveal.in .eyebrow::after,
+.eyebrow.in::after {
+  animation: esb-line-grow .5s cubic-bezier(.16,1,.3,1) forwards;
+  transform-origin: left;
+}
+
+/* The decorative line below .eyebrow (overrides design-system.css) */
+.eyebrow::after {
+  transform: scaleX(0);
+  transform-origin: left;
+  /* existing properties from design-system are preserved */
+}
+.reveal.in .eyebrow::after { transform: scaleX(1); transition: transform .5s cubic-bezier(.16,1,.3,1) .1s; }
+
+
+/* ---- Scroll progress line in topbar ----------------------- */
+
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold-600), var(--gold-400));
+  z-index: 9999;
+  transition: width .1s linear;
+  pointer-events: none;
+}
+
+
+/* ---- prefers-reduced-motion: kill all decorative motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Hero entrances: skip straight to visible */
+  .hero-enter,
+  .hero-enter-right,
+  .hero-enter-scale {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Scroll reveals */
+  .reveal, .reveal-left, .reveal-right {
+    transition: none;
+    filter: none;
+  }
+
+  /* Decorative loops */
+  .badge-float,
+  .diamond,
+  .type-cursor {
+    animation: none;
+  }
+
+  /* Button shimmer */
+  .btn-gold::before { display: none; }
+
+  /* Card hover: simpler shadow-only */
+  .card:hover { transform: none; }
+  .btn:hover  { transform: none; }
+
+  /* Scroll progress bar: instant */
+  .scroll-progress { transition: none; }
+}

@@ -1,15 +1,8 @@
 /* ===== Homepage-specific styles ===== */
 
-/* Enable Scroll Snapping for premium fold transitions */
-html {
-  scroll-snap-type: y proximity;
-  scroll-padding-top: 84px; /* sticky header height offset */
-}
-
 /* Hero variant visibility */
 .hero-variant {
   display: none;
-  scroll-snap-align: start;
 }
 body[data-hero="1"] #hero-1,
 body[data-hero="2"] #hero-2,
@@ -207,7 +200,7 @@ body[data-hero="3"] #hero-3 { display: block; }
 /* -----------------------------------------------------------------------
    Stats band
 ----------------------------------------------------------------------- */
-.stats-band { background: var(--green-900); color: #fff; scroll-snap-align: start; }
+.stats-band { background: var(--green-900); color: #fff; }
 .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(255,255,255,.1); }
 .stats-grid > div { background: var(--green-900); padding: clamp(38px,5.5vw,60px) 20px; text-align: center; }
 .stats-grid .stat-num { color: var(--gold-400); }

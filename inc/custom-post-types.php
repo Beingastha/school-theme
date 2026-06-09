@@ -100,6 +100,24 @@ function esb_register_post_types(): void {
 			'menu_icon'    => 'dashicons-format-gallery',
 		]
 	);
+
+	/* ---- Why Choose Us ---- */
+	register_post_type(
+		'esb_feature',
+		[
+			'labels'       => [
+				'name'          => esc_html__( 'Why Choose Us', 'excellence-school' ),
+				'singular_name' => esc_html__( 'Feature Card', 'excellence-school' ),
+				'add_new_item'  => esc_html__( 'Add Feature Card', 'excellence-school' ),
+				'edit_item'     => esc_html__( 'Edit Feature Card', 'excellence-school' ),
+			],
+			'public'       => false,
+			'show_ui'      => true,
+			'show_in_rest' => true,
+			'supports'     => [ 'title', 'editor', 'page-attributes' ],
+			'menu_icon'    => 'dashicons-star-filled',
+		]
+	);
 }
 
 add_action( 'init', 'esb_register_taxonomies' );
@@ -170,6 +188,15 @@ function esb_add_meta_boxes(): void {
 		'normal',
 		'high'
 	);
+
+	add_meta_box(
+		'esb_feature_meta',
+		esc_html__( 'Hindi Translation', 'excellence-school' ),
+		'esb_render_feature_meta',
+		'esb_feature',
+		'normal',
+		'high'
+	);
 }
 
 function esb_render_testimonial_meta( WP_Post $post ): void {
@@ -229,6 +256,22 @@ function esb_render_gallery_meta( WP_Post $post ): void {
 	<?php
 }
 
+function esb_render_feature_meta( WP_Post $post ): void {
+	wp_nonce_field( 'esb_feature_meta_save', 'esb_feature_meta_nonce' );
+	$title_hi = get_post_meta( $post->ID, '_esb_feature_title_hi', true );
+	$desc_hi  = get_post_meta( $post->ID, '_esb_feature_desc_hi', true );
+	?>
+	<p>
+		<label for="esb_feature_title_hi"><strong><?php esc_html_e( 'Hindi Title', 'excellence-school' ); ?></strong></label><br>
+		<input type="text" id="esb_feature_title_hi" name="esb_feature_title_hi" value="<?php echo esc_attr( $title_hi ); ?>" class="widefat" />
+	</p>
+	<p>
+		<label for="esb_feature_desc_hi"><strong><?php esc_html_e( 'Hindi Description', 'excellence-school' ); ?></strong></label><br>
+		<textarea id="esb_feature_desc_hi" name="esb_feature_desc_hi" class="widefat" rows="3"><?php echo esc_textarea( $desc_hi ); ?></textarea>
+	</p>
+	<?php
+}
+
 add_action( 'save_post', 'esb_save_meta_boxes' );
 function esb_save_meta_boxes( int $post_id ): void {
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
@@ -269,5 +312,14 @@ function esb_save_meta_boxes( int $post_id ): void {
 		$allowed_spans = [ 'normal', 'tall' ];
 		$span = sanitize_key( wp_unslash( $_POST['esb_gallery_span'] ?? 'normal' ) );
 		update_post_meta( $post_id, '_esb_gallery_span', in_array( $span, $allowed_spans, true ) ? $span : 'normal' );
+	}
+
+	/* Feature/WCU meta */
+	if ( isset( $_POST['esb_feature_meta_nonce'] ) &&
+		wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['esb_feature_meta_nonce'] ) ), 'esb_feature_meta_save' ) &&
+		current_user_can( 'edit_post', $post_id )
+	) {
+		update_post_meta( $post_id, '_esb_feature_title_hi', sanitize_text_field( wp_unslash( $_POST['esb_feature_title_hi'] ?? '' ) ) );
+		update_post_meta( $post_id, '_esb_feature_desc_hi',  sanitize_textarea_field( wp_unslash( $_POST['esb_feature_desc_hi'] ?? '' ) ) );
 	}
 }

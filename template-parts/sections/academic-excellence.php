@@ -4,12 +4,21 @@
  *
  * @package excellence-school
  */
-$bars = [
-	[ 'en' => 'Class XII · Science',    'hi' => 'कक्षा 12 · विज्ञान',  'pct' => 99 ],
-	[ 'en' => 'Class XII · Commerce',   'hi' => 'कक्षा 12 · वाणिज्य', 'pct' => 98 ],
-	[ 'en' => 'Class XII · Humanities', 'hi' => 'कक्षा 12 · मानविकी', 'pct' => 97 ],
-	[ 'en' => 'Class X · All Streams',  'hi' => 'कक्षा 10 · सभी',      'pct' => 96 ],
-];
+$bars = [];
+for ( $i = 1; $i <= 4; $i++ ) {
+	$default_names_en = [ 1 => 'Class XII · Science',    2 => 'Class XII · Commerce',   3 => 'Class XII · Humanities', 4 => 'Class X · All Streams' ];
+	$default_names_hi = [ 1 => 'कक्षा 12 · विज्ञान',  2 => 'कक्षा 12 · वाणिज्य', 3 => 'कक्षा 12 · मानविकी', 4 => 'कक्षा 10 · सभी' ];
+	$default_pcts     = [ 1 => 99, 2 => 98, 3 => 97, 4 => 96 ];
+
+	$bars[] = [
+		'en'  => esb_opt( "esb_result_{$i}_name_en", $default_names_en[$i] ),
+		'hi'  => esb_opt( "esb_result_{$i}_name_hi", $default_names_hi[$i] ),
+		'pct' => (int) esb_opt( "esb_result_{$i}_pct", (string) $default_pcts[$i] ),
+	];
+}
+$desc_en = esb_opt( 'esb_results_desc_en', 'Our Class XII Science cohort recorded a 99% pass rate in 2025, with multiple students placing in the district merit list. Dedicated remedial sessions and competitive-exam coaching ensure no learner is left behind.' );
+$desc_hi = esb_opt( 'esb_results_desc_hi', 'हमारे कक्षा 12 विज्ञान समूह ने 2025 में 99% उत्तीर्ण दर दर्ज की, जिसमें कई विद्यार्थी जिला मेरिट सूची में रहे। समर्पित उपचारात्मक सत्र और प्रतियोगी कोचिंग सुनिश्चित करती है कि कोई पीछे न छूटे।' );
+
 $streams = [
 	[ 'en' => 'Science',    'hi' => 'विज्ञान',   'desc_en' => 'PCM & PCB with NEET / JEE foundation coaching.', 'desc_hi' => 'पीसीएम व पीसीबी, नीट/जेईई फाउंडेशन कोचिंग के साथ।' ],
 	[ 'en' => 'Commerce',   'hi' => 'वाणिज्य',   'desc_en' => 'Accountancy, Economics & Business Studies.',     'desc_hi' => 'लेखाशास्त्र, अर्थशास्त्र व व्यवसाय अध्ययन।' ],
@@ -47,9 +56,9 @@ $streams = [
 			</div>
 			<div>
 				<p class="muted"
-				   data-en="Our Class XII Science cohort recorded a 99% pass rate in 2025, with multiple students placing in the district merit list. Dedicated remedial sessions and competitive-exam coaching ensure no learner is left behind."
-				   data-hi="हमारे कक्षा 12 विज्ञान समूह ने 2025 में 99% उत्तीर्ण दर दर्ज की, जिसमें कई विद्यार्थी जिला मेरिट सूची में रहे। समर्पित उपचारात्मक सत्र और प्रतियोगी कोचिंग सुनिश्चित करती है कि कोई पीछे न छूटे।">
-					<?php esc_html_e( 'Our Class XII Science cohort recorded a 99% pass rate in 2025, with multiple students placing in the district merit list. Dedicated remedial sessions and competitive-exam coaching ensure no learner is left behind.', 'excellence-school' ); ?>
+				   data-en="<?php echo esc_attr( $desc_en ); ?>"
+				   data-hi="<?php echo esc_attr( $desc_hi ); ?>">
+					<?php echo esc_html( $desc_en ); ?>
 				</p>
 				<div class="stream-cards">
 					<?php foreach ( $streams as $stream ) : ?>

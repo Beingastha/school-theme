@@ -43,17 +43,40 @@ $card_defaults = [
 	],
 ];
 
+$query = new WP_Query( [
+	'post_type'      => 'esb_feature',
+	'posts_per_page' => -1,
+	'orderby'        => 'menu_order title',
+	'order'          => 'ASC',
+] );
+
 $cards = [];
-foreach ( $card_defaults as $i => $defaults ) {
-	$title = esb_pg( "wcu_card_{$i}_title", $defaults['en'] );
-	$desc  = esb_pg( "wcu_card_{$i}_desc",  $defaults['desc_en'] );
-	$cards[] = [
-		'en'      => $title,
-		'hi'      => $defaults['hi'],
-		'desc_en' => $desc,
-		'desc_hi' => $defaults['desc_hi'],
-	];
+if ( $query->have_posts() ) {
+	while ( $query->have_posts() ) {
+		$query->the_post();
+		$hi_title = get_post_meta( get_the_ID(), '_esb_feature_title_hi', true );
+		$hi_desc  = get_post_meta( get_the_ID(), '_esb_feature_desc_hi', true );
+		$cards[] = [
+			'en'      => get_the_title(),
+			'hi'      => $hi_title ?: get_the_title(),
+			'desc_en' => get_the_content(),
+			'desc_hi' => $hi_desc ?: get_the_content(),
+		];
+	}
+	wp_reset_postdata();
+} else {
+	foreach ( $card_defaults as $i => $defaults ) {
+		$title = esb_pg( "wcu_card_{$i}_title", $defaults['en'] );
+		$desc  = esb_pg( "wcu_card_{$i}_desc",  $defaults['desc_en'] );
+		$cards[] = [
+			'en'      => $title,
+			'hi'      => $defaults['hi'],
+			'desc_en' => $desc,
+			'desc_hi' => $defaults['desc_hi'],
+		];
+	}
 }
+
 
 $wcu_h2  = esb_pg( 'wcu_h2',  'A Foundation Built on Trust & Merit' );
 $wcu_sub = esb_pg( 'wcu_sub', "As a designated Government School of Excellence, we combine the reach of public education with the standards of India's leading private schools." );

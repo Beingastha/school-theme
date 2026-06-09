@@ -287,6 +287,103 @@ function esb_customizer_register( WP_Customize_Manager $wp_customize ): void {
 			'soft_sand'  => esc_html__( 'Soft Sand — deeper warmth (#f1ead9)', 'excellence-school' ),
 		],
 	] );
+
+	/* ----- Section: Board Results ----- */
+	$wp_customize->add_section(
+		'esb_results_section',
+		[
+			'title'    => esc_html__( 'Board Results', 'excellence-school' ),
+			'panel'    => 'esb_school_panel',
+			'priority' => 45,
+		]
+	);
+
+	// Description Text (EN and HI)
+	$wp_customize->add_setting( 'esb_results_desc_en', [
+		'default'           => 'Our Class XII Science cohort recorded a 99% pass rate in 2025, with multiple students placing in the district merit list. Dedicated remedial sessions and competitive-exam coaching ensure no learner is left behind.',
+		'sanitize_callback' => 'sanitize_textarea_field',
+	] );
+	$wp_customize->add_control( 'esb_results_desc_en', [
+		'label'   => esc_html__( 'Results Paragraph (English)', 'excellence-school' ),
+		'section' => 'esb_results_section',
+		'type'    => 'textarea',
+	] );
+
+	$wp_customize->add_setting( 'esb_results_desc_hi', [
+		'default'           => 'हमारे कक्षा 12 विज्ञान समूह ने 2025 में 99% उत्तीर्ण दर दर्ज की, जिसमें कई विद्यार्थी जिला मेरिट सूची में रहे। समर्पित उपचारात्मक सत्र और प्रतियोगी कोचिंग सुनिश्चित करती है कि कोई पीछे न छूटे।',
+		'sanitize_callback' => 'sanitize_textarea_field',
+	] );
+	$wp_customize->add_control( 'esb_results_desc_hi', [
+		'label'   => esc_html__( 'Results Paragraph (Hindi)', 'excellence-school' ),
+		'section' => 'esb_results_section',
+		'type'    => 'textarea',
+	] );
+
+	// Results Bars (4 items)
+	$results_defaults = [
+		1 => [ 'name_en' => 'Class XII · Science',    'name_hi' => 'कक्षा 12 · विज्ञान',  'pct' => 99 ],
+		2 => [ 'name_en' => 'Class XII · Commerce',   'name_hi' => 'कक्षा 12 · वाणिज्य', 'pct' => 98 ],
+		3 => [ 'name_en' => 'Class XII · Humanities', 'name_hi' => 'कक्षा 12 · मानविकी', 'pct' => 97 ],
+		4 => [ 'name_en' => 'Class X · All Streams',  'name_hi' => 'कक्षा 10 · सभी',      'pct' => 96 ],
+	];
+
+	foreach ( $results_defaults as $i => $defaults ) {
+		// Bar Name EN
+		$wp_customize->add_setting( "esb_result_{$i}_name_en", [ 'default' => $defaults['name_en'], 'sanitize_callback' => 'sanitize_text_field' ] );
+		$wp_customize->add_control( "esb_result_{$i}_name_en", [ 'label' => sprintf( esc_html__( 'Bar %d Name (English)', 'excellence-school' ), $i ), 'section' => 'esb_results_section', 'type' => 'text' ] );
+
+		// Bar Name HI
+		$wp_customize->add_setting( "esb_result_{$i}_name_hi", [ 'default' => $defaults['name_hi'], 'sanitize_callback' => 'sanitize_text_field' ] );
+		$wp_customize->add_control( "esb_result_{$i}_name_hi", [ 'label' => sprintf( esc_html__( 'Bar %d Name (Hindi)', 'excellence-school' ), $i ), 'section' => 'esb_results_section', 'type' => 'text' ] );
+
+		// Bar Percentage
+		$wp_customize->add_setting( "esb_result_{$i}_pct", [ 'default' => $defaults['pct'], 'sanitize_callback' => 'absint' ] );
+		$wp_customize->add_control( "esb_result_{$i}_pct", [ 'label' => sprintf( esc_html__( 'Bar %d Percentage (0-100)', 'excellence-school' ), $i ), 'section' => 'esb_results_section', 'type' => 'number', 'input_attrs' => [ 'min' => 0, 'max' => 100 ] ] );
+	}
+
+	/* ----- Section: Student Life Mosaic ----- */
+	$wp_customize->add_section(
+		'esb_student_life_section',
+		[
+			'title'    => esc_html__( 'Student Life Mosaic', 'excellence-school' ),
+			'panel'    => 'esb_school_panel',
+			'priority' => 48,
+		]
+	);
+
+	// Student Life default captions
+	$life_defaults = [
+		1 => [ 'en' => 'Annual Day',   'hi' => 'वार्षिकोत्सव' ],
+		2 => [ 'en' => 'NCC',          'hi' => 'एनसीसी' ],
+		3 => [ 'en' => 'Debate',       'hi' => 'वाद-विवाद' ],
+		4 => [ 'en' => 'Science Fair', 'hi' => 'विज्ञान मेला' ],
+		5 => [ 'en' => 'Cultural',     'hi' => 'सांस्कृतिक' ],
+		6 => [ 'en' => 'Sports Meet',  'hi' => 'खेलकूद' ],
+	];
+
+	foreach ( $life_defaults as $i => $defaults ) {
+		// Image Upload
+		$wp_customize->add_setting( "esb_student_life_img_{$i}", [ 'default' => '', 'sanitize_callback' => 'absint' ] );
+		$wp_customize->add_control(
+			new WP_Customize_Media_Control(
+				$wp_customize,
+				"esb_student_life_img_{$i}",
+				[
+					'label'     => sprintf( esc_html__( 'Tile %d Image', 'excellence-school' ), $i ),
+					'section'   => 'esb_student_life_section',
+					'mime_type' => 'image',
+				]
+			)
+		);
+
+		// English Caption
+		$wp_customize->add_setting( "esb_student_life_lbl_{$i}_en", [ 'default' => $defaults['en'], 'sanitize_callback' => 'sanitize_text_field' ] );
+		$wp_customize->add_control( "esb_student_life_lbl_{$i}_en", [ 'label' => sprintf( esc_html__( 'Tile %d Caption (English)', 'excellence-school' ), $i ), 'section' => 'esb_student_life_section', 'type' => 'text' ] );
+
+		// Hindi Caption
+		$wp_customize->add_setting( "esb_student_life_lbl_{$i}_hi", [ 'default' => $defaults['hi'], 'sanitize_callback' => 'sanitize_text_field' ] );
+		$wp_customize->add_control( "esb_student_life_lbl_{$i}_hi", [ 'label' => sprintf( esc_html__( 'Tile %d Caption (Hindi)', 'excellence-school' ), $i ), 'section' => 'esb_student_life_section', 'type' => 'text' ] );
+	}
 }
 
 function esb_sanitize_hero_variant( string $input ): string {

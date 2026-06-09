@@ -1,7 +1,16 @@
 /* ===== Homepage-specific styles ===== */
 
+/* Enable Scroll Snapping for premium fold transitions */
+html {
+  scroll-snap-type: y proximity;
+  scroll-padding-top: 84px; /* sticky header height offset */
+}
+
 /* Hero variant visibility */
-.hero-variant { display: none; }
+.hero-variant {
+  display: none;
+  scroll-snap-align: start;
+}
 body[data-hero="1"] #hero-1,
 body[data-hero="2"] #hero-2,
 body[data-hero="3"] #hero-3 { display: block; }
@@ -9,7 +18,16 @@ body[data-hero="3"] #hero-3 { display: block; }
 /* -----------------------------------------------------------------------
    Hero 1 — Stately full-bleed
 ----------------------------------------------------------------------- */
-.hero1 { position: relative; min-height: 90vh; display: flex; align-items: flex-end; color: #fff; overflow: hidden; }
+.hero1 {
+  position: relative;
+  min-height: calc(100vh - 126px);
+  min-height: calc(100dvh - 126px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: #fff;
+  overflow: hidden;
+}
 .hero1 .hero-bg { position: absolute; inset: 0; }
 .hero1 .hero-bg .ph,
 .hero1 .hero-bg img { width: 100%; height: 100%; border: 0; border-radius: 0; object-fit: cover; }
@@ -19,7 +37,7 @@ body[data-hero="3"] #hero-3 { display: block; }
     linear-gradient(180deg, rgba(7,50,31,.5) 0%, rgba(7,50,31,.22) 38%, rgba(7,50,31,.92) 100%),
     radial-gradient(140% 90% at 18% 0%, rgba(7,50,31,.48), transparent 60%);
 }
-.hero1 .container { position: relative; padding-top: 88px; padding-bottom: 72px; }
+.hero1 .container { position: relative; padding-top: clamp(40px, 6vh, 88px); padding-bottom: clamp(40px, 5vh, 72px); }
 .hero1 h1 { color: #fff; font-size: clamp(32px, 8vw, 96px); max-width: 14ch; }
 .hero1 .sub { color: rgba(255,255,255,.88); font-size: clamp(18px, 2.4vw, 22px); max-width: 54ch; margin-top: 22px; }
 .hero1 .cta-row { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 38px; }
@@ -34,7 +52,12 @@ body[data-hero="3"] #hero-3 { display: block; }
    Hero 2 — Dark prestige split (primary layout)
 ----------------------------------------------------------------------- */
 .hero2 {
-  padding: clamp(80px, 9vw, 120px) 0 clamp(72px, 8vw, 108px);
+  min-height: calc(100vh - 126px);
+  min-height: calc(100dvh - 126px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(30px, 4vw, 60px) 0;
   background: var(--green-900);
   position: relative;
   overflow: hidden;
@@ -82,29 +105,29 @@ body[data-hero="3"] #hero-3 { display: block; }
 
 .hero2 h1 {
   color: #fff;
-  font-size: clamp(32px, 6.8vw, 84px);
-  margin-top: 20px;
+  font-size: clamp(32px, 5.5vw, 76px);
+  margin-top: clamp(12px, 2vh, 20px);
   letter-spacing: -.02em;
 }
 
 .hero2 .sub {
   color: rgba(255,255,255,.78);
-  font-size: clamp(17px, 2vw, 20px);
-  margin-top: 22px;
+  font-size: clamp(16px, 1.8vw, 19px);
+  margin-top: clamp(12px, 2vh, 22px);
   max-width: 50ch;
-  line-height: 1.75;
+  line-height: 1.7;
 }
 
-.hero2 .cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
+.hero2 .cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: clamp(16px, 3vh, 32px); }
 
 .hero2 .mini-stats {
-  display: flex; gap: 38px;
-  margin-top: 44px; padding-top: 28px;
+  display: flex; gap: clamp(20px, 3.5vw, 38px);
+  margin-top: clamp(20px, 4vh, 40px); padding-top: clamp(16px, 3vh, 28px);
   border-top: 1px solid rgba(255,255,255,.12);
 }
 .hero2 .mini-stats .n {
   font-family: var(--ff-display);
-  font-size: clamp(34px, 4vw, 44px);
+  font-size: clamp(30px, 3.8vw, 40px);
   font-weight: 600;
   color: var(--gold-400);
   line-height: 1;
@@ -140,7 +163,14 @@ body[data-hero="3"] #hero-3 { display: block; }
 ----------------------------------------------------------------------- */
 .hero3 {
   position: relative; background: var(--green-900); color: #fff;
-  padding: clamp(80px,10vw,130px) 0; overflow: hidden; text-align: center;
+  min-height: calc(100vh - 126px);
+  min-height: calc(100dvh - 126px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(30px, 4vw, 60px) 0;
+  overflow: hidden;
+  text-align: center;
 }
 .hero3::before {
   content: ""; position: absolute; inset: 0;
@@ -150,14 +180,15 @@ body[data-hero="3"] #hero-3 { display: block; }
 }
 .hero3 .container { position: relative; max-width: 920px; }
 .hero3 .crest-big {
-  width: 130px; height: 130px; margin: 0 auto 28px; border-radius: 50%;
+  width: clamp(80px, 10vh, 120px); height: clamp(80px, 10vh, 120px);
+  margin: 0 auto clamp(16px, 2vh, 28px); border-radius: 50%;
   box-shadow: 0 0 0 1px rgba(220,192,104,.45), 0 0 0 8px rgba(220,192,104,.06), 0 30px 70px -30px rgba(0,0,0,.6);
 }
-.hero3 h1 { color: #fff; font-size: clamp(30px, 7.5vw, 88px); }
-.hero3 .sub { color: rgba(255,255,255,.82); font-size: clamp(17px,2.2vw,22px); margin: 22px auto 0; max-width: 56ch; }
-.hero3 .cta-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin-top: 38px; }
+.hero3 h1 { color: #fff; font-size: clamp(30px, 5.5vw, 76px); }
+.hero3 .sub { color: rgba(255,255,255,.82); font-size: clamp(16px, 1.8vw, 19px); margin: clamp(12px, 2vh, 22px) auto 0; max-width: 56ch; }
+.hero3 .cta-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin-top: clamp(16px, 3vh, 32px); }
 .hero3 .stat-strip {
-  display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; margin-top: 64px;
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; margin-top: clamp(24px, 4vh, 52px);
   background: rgba(255,255,255,.12);
   border: 1px solid rgba(255,255,255,.12);
   border-radius: var(--r); overflow: hidden;
@@ -165,10 +196,10 @@ body[data-hero="3"] #hero-3 { display: block; }
 .hero3 .stat-strip > div {
   background: rgba(7,50,31,.7);
   backdrop-filter: blur(4px);
-  padding: 28px 14px;
+  padding: clamp(16px, 2vh, 24px) 14px;
 }
 .hero3 .stat-strip .n {
-  font-family: var(--ff-display); font-size: clamp(34px,5vw,52px); font-weight: 600;
+  font-family: var(--ff-display); font-size: clamp(30px, 4vw, 44px); font-weight: 600;
   color: var(--gold-400); line-height: 1;
 }
 .hero3 .stat-strip .l { font-size: 13px; color: rgba(255,255,255,.65); margin-top: 8px; letter-spacing: .06em; }
@@ -176,7 +207,7 @@ body[data-hero="3"] #hero-3 { display: block; }
 /* -----------------------------------------------------------------------
    Stats band
 ----------------------------------------------------------------------- */
-.stats-band { background: var(--green-900); color: #fff; }
+.stats-band { background: var(--green-900); color: #fff; scroll-snap-align: start; }
 .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(255,255,255,.1); }
 .stats-grid > div { background: var(--green-900); padding: clamp(38px,5.5vw,60px) 20px; text-align: center; }
 .stats-grid .stat-num { color: var(--gold-400); }
@@ -399,10 +430,16 @@ body[data-hero="3"] #hero-3 { display: block; }
   .life-grid { grid-template-columns: 1fr; grid-auto-rows: 220px; }
   .life-tile.big, .life-tile.wide { grid-column: span 1; grid-row: span 1; }
   .hero1 .accolades { gap: 12px 22px; }
-  .hero2 .mini-stats { flex-wrap: wrap; gap: 22px 32px; }
-  .hero2 { padding: 48px 0; }
-  .hero3 { padding: 48px 0; }
-  .hero1 .container { padding-top: 64px; padding-bottom: 48px; }
+  .hero2 .mini-stats { flex-wrap: wrap; gap: 14px 24px; margin-top: 20px; padding-top: 16px; }
+  .hero2 .mini-stats .n { font-size: 28px; }
+  .hero2 .mini-stats .l { font-size: 11px; margin-top: 2px; }
+  .hero2 { padding: 24px 0; }
+  .hero3 { padding: 24px 0; }
+  .hero3 .stat-strip { grid-template-columns: 1fr 1fr; margin-top: 20px; }
+  .hero3 .stat-strip > div { padding: 12px 10px; }
+  .hero3 .stat-strip .n { font-size: 28px; }
+  .hero3 .stat-strip .l { font-size: 11px; margin-top: 4px; }
+  .hero1 .container { padding-top: 48px; padding-bottom: 36px; }
 }
 @media (max-width: 480px) {
   .hero-variant .cta-row { flex-direction: column; align-items: stretch; width: 100%; }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html <?php language_attributes(); ?> data-lang="en">
+<html <?php language_attributes(); ?> class="no-js" data-lang="en">
 <head>
+<script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
 <meta charset="<?php bloginfo( 'charset' ); ?>" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />

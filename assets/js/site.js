@@ -2,6 +2,8 @@
 (function () {
   "use strict";
 
+  document.documentElement.classList.add("page-loaded");
+
   /* =========================================================
      Scroll progress bar
   ========================================================= */

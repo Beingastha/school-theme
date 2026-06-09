@@ -20,7 +20,9 @@ $portrait_url    = $portrait_id ? wp_get_attachment_image_url( $portrait_id, 'la
 				<?php else : ?>
 					<div class="ph" data-label="principal-portrait.jpg — 600×760"></div>
 				<?php endif; ?>
-				<?php esb_logo(); ?><!-- seal overlay -->
+				<div class="seal">
+					<?php esb_logo(); ?>
+				</div>
 			</div>
 			<div class="reveal">
 				<span class="eyebrow" data-en="Principal's Message" data-hi="प्राचार्य का संदेश">

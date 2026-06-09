@@ -238,20 +238,25 @@ body[data-hero="3"] #hero-3 { display: block; }
 .principal .portrait .ph { height: 480px; border-radius: var(--r-lg); }
 .principal .portrait img.portrait-img { height: 480px; border-radius: var(--r-lg); width: 100%; object-fit: cover; }
 .principal .portrait .seal {
-  position: absolute; bottom: -22px; right: -16px; width: 92px; height: 92px;
-  border-radius: 50%; box-shadow: var(--shadow-md); border: 3px solid var(--ivory);
+  position: absolute; bottom: -18px; right: -18px; width: 88px; height: 88px;
+  border-radius: 50%; box-shadow: var(--shadow-md); border: 4px solid var(--ivory);
+  background: var(--ivory); display: flex; align-items: center; justify-content: center;
+  overflow: hidden; z-index: 5;
+}
+.principal .portrait .seal img {
+  width: 58px; height: 58px; object-fit: contain; display: block;
 }
 .principal blockquote {
-  font-family: var(--ff-display); font-size: clamp(26px,3.4vw,40px); line-height: 1.28;
-  color: var(--green-900); margin: 22px 0 0; font-weight: 500;
+  font-family: var(--ff-display); font-size: clamp(18px, 2.2vw, 25px); line-height: 1.5;
+  color: var(--green-900); margin: 16px 0 0; font-weight: 500;
 }
 .principal .quote-mark {
   font-family: var(--ff-display); font-size: 96px; line-height: .4;
   color: var(--gold-500); height: 40px; display: block;
 }
-.principal .signoff { margin-top: 30px; }
-.principal .signoff .nm { font-family: var(--ff-display); font-size: 24px; font-weight: 600; color: var(--green-800); }
-.principal .signoff .rl { color: var(--muted); font-size: 15px; }
+.principal .signoff { margin-top: 24px; }
+.principal .signoff .nm { font-family: var(--ff-display); font-size: 21px; font-weight: 600; color: var(--green-800); }
+.principal .signoff .rl { color: var(--muted); font-size: 14px; }
 
 /* -----------------------------------------------------------------------
    Academic excellence / results

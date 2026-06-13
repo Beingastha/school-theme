@@ -105,25 +105,48 @@
 <div class="drawer">
 	<div class="drawer-scrim"></div>
 	<div class="drawer-panel">
+
+		<!-- Drawer header: brand + close -->
 		<div class="dh">
-			<span class="eyebrow" data-en="Menu" data-hi="मेनू"><?php esc_html_e( 'Menu', 'excellence-school' ); ?></span>
+			<a class="drawer-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+				<?php esb_logo(); ?>
+				<span class="drawer-name"
+				      data-en="<?php echo esc_attr( esb_opt( 'esb_school_short_name', 'Subhash Excellence School' ) ); ?>"
+				      data-hi="सुभाष उत्कृष्ट विद्यालय">
+					<?php echo esc_html( esb_opt( 'esb_school_short_name', 'Subhash Excellence School' ) ); ?>
+				</span>
+			</a>
 			<button class="drawer-close" aria-label="<?php esc_attr_e( 'Close menu', 'excellence-school' ); ?>">×</button>
 		</div>
-		<?php
-		wp_nav_menu( [
-			'theme_location' => 'drawer',
-			'container'      => false,
-			'items_wrap'     => '%3$s',
-			'walker'         => new ESB_Nav_Walker(),
-			'fallback_cb'    => 'esb_default_drawer_nav',
-		] );
-		?>
-		<a href="<?php echo esc_url( esb_page_url( 'admissions' ) ); ?>"
-		   class="btn btn-gold"
-		   style="margin-top:18px"
-		   data-en="Apply Now" data-hi="आवेदन करें">
-			<?php esc_html_e( 'Apply Now', 'excellence-school' ); ?>
-		</a>
+
+		<!-- Nav links (scrollable middle area) -->
+		<nav class="drawer-nav">
+			<?php
+			wp_nav_menu( [
+				'theme_location' => 'drawer',
+				'container'      => false,
+				'items_wrap'     => '%3$s',
+				'walker'         => new ESB_Nav_Walker(),
+				'fallback_cb'    => 'esb_default_drawer_nav',
+			] );
+			?>
+		</nav>
+
+		<!-- Drawer footer: lang + CTA -->
+		<div class="drawer-footer">
+			<div class="drawer-lang-wrap">
+				<div class="lang-toggle" role="group" aria-label="<?php esc_attr_e( 'Language', 'excellence-school' ); ?>">
+					<button data-lang="en" class="active">EN</button>
+					<button data-lang="hi">हिं</button>
+				</div>
+			</div>
+			<a href="<?php echo esc_url( esb_page_url( 'admissions' ) ); ?>"
+			   class="btn btn-gold btn-arrow"
+			   data-en="Apply for Admission" data-hi="आवेदन करें">
+				<?php esc_html_e( 'Apply for Admission', 'excellence-school' ); ?>
+			</a>
+		</div>
+
 	</div>
 </div>
 
@@ -133,13 +156,12 @@
  */
 function esb_default_nav(): void {
 	$links = [
-		home_url( '/' )              => [ 'Home', 'होम' ],
-		home_url( '/about/' )        => [ 'About', 'परिचय' ],
-		home_url( '/academics/' )    => [ 'Academics', 'शिक्षा' ],
-		home_url( '/#facilities' )   => [ 'Facilities', 'सुविधाएं' ],
-		home_url( '/#achievements' ) => [ 'Achievements', 'उपलब्धियां' ],
-		home_url( '/admissions/' )   => [ 'Admissions', 'प्रवेश' ],
-		home_url( '/#contact' )      => [ 'Contact', 'संपर्क' ],
+		home_url( '/' )               => [ 'Home', 'होम' ],
+		home_url( '/about/' )         => [ 'About', 'परिचय' ],
+		home_url( '/academics/' )     => [ 'Academics', 'शिक्षा' ],
+		home_url( '/student-corner/' ) => [ 'Student Corner', 'विद्यार्थी कोना' ],
+		home_url( '/admissions/' )    => [ 'Admission', 'प्रवेश' ],
+		home_url( '/#contact' )       => [ 'Contact', 'संपर्क' ],
 	];
 	foreach ( $links as $url => [ $en, $hi ] ) {
 		printf(
@@ -157,22 +179,53 @@ function esb_default_drawer_nav(): void {
 }
 
 /**
- * Simple nav walker that adds data-en/data-hi from nav item title / description.
+ * Nav walker that adds data-en/data-hi from nav item title / description,
+ * and renders dropdown submenus for top-level items with children.
  */
 class ESB_Nav_Walker extends Walker_Nav_Menu {
+	public function start_lvl( &$output, $depth = 0, $args = null ): void {
+		$output .= '<div class="nav-dropdown">';
+	}
+
+	public function end_lvl( &$output, $depth = 0, $args = null ): void {
+		$output .= '</div>';
+	}
+
 	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ): void {
-		$classes   = empty( $item->classes ) ? [] : (array) $item->classes;
-		$is_active = in_array( 'current-menu-item', $classes, true ) || in_array( 'current_page_item', $classes, true );
+		$classes      = empty( $item->classes ) ? [] : (array) $item->classes;
+		$is_active    = array_intersect( [ 'current-menu-item', 'current_page_item', 'current-menu-parent', 'current-menu-ancestor', 'current_page_parent', 'current_page_ancestor' ], $classes );
+		$has_children = in_array( 'menu-item-has-children', $classes, true ) || ! empty( $args->has_children );
+		$hi           = trim( $item->description );
+
+		if ( 0 === $depth && $has_children ) {
+			$output .= '<div class="nav-item has-children">';
+			$output .= '<a href="' . esc_url( $item->url ) . '" class="nav-link' . ( $is_active ? ' active' : '' ) . '">';
+			if ( $hi ) {
+				$output .= '<span data-en="' . esc_attr( $item->title ) . '" data-hi="' . esc_attr( $hi ) . '">' . esc_html( $item->title ) . '</span>';
+			} else {
+				$output .= esc_html( $item->title );
+			}
+			$output .= '<span class="nav-caret" aria-hidden="true"></span>';
+			$output .= '</a>';
+			return;
+		}
 
 		$attr  = 'href="' . esc_url( $item->url ) . '"';
-		$attr .= $is_active ? ' class="active"' : '';
+		$attr .= 0 === $depth ? '' : ' class="nav-sublink' . ( $is_active ? ' active' : '' ) . '"';
+		$attr .= ( 0 === $depth && $is_active ) ? ' class="active"' : '';
 
-		// Use item description field for Hindi text.
-		$hi = trim( $item->description );
 		if ( $hi ) {
 			$attr .= ' data-en="' . esc_attr( $item->title ) . '" data-hi="' . esc_attr( $hi ) . '"';
 		}
 
 		$output .= '<a ' . $attr . '>' . esc_html( $item->title ) . '</a>';
+	}
+
+	public function end_el( &$output, $item, $depth = 0, $args = null ): void {
+		$classes      = empty( $item->classes ) ? [] : (array) $item->classes;
+		$has_children = in_array( 'menu-item-has-children', $classes, true ) || ! empty( $args->has_children );
+		if ( 0 === $depth && $has_children ) {
+			$output .= '</div>';
+		}
 	}
 }

@@ -160,6 +160,16 @@ function esb_customizer_register( WP_Customize_Manager $wp_customize ): void {
 		'type'    => 'textarea',
 	] );
 
+	$wp_customize->add_setting( 'esb_principal_quote_hi', [
+		'default'           => 'हमारा उद्देश्य सरल है — हमारे द्वार से गुजरने वाला प्रत्येक बच्चा ज्ञान, चरित्र और नेतृत्व का आत्मविश्वास लेकर जाए। यहाँ उत्कृष्टता कोई विशेषाधिकार नहीं, बल्कि हर परिवार से किया गया वादा है।',
+		'sanitize_callback' => 'sanitize_textarea_field',
+	] );
+	$wp_customize->add_control( 'esb_principal_quote_hi', [
+		'label'   => esc_html__( "Principal's Quote (Hindi)", 'excellence-school' ),
+		'section' => 'esb_principal',
+		'type'    => 'textarea',
+	] );
+
 	/* Image upload for principal portrait */
 	$wp_customize->add_setting( 'esb_principal_image', [ 'default' => '', 'sanitize_callback' => 'absint' ] );
 	$wp_customize->add_control(
@@ -254,39 +264,105 @@ function esb_customizer_register( WP_Customize_Manager $wp_customize ): void {
 		)
 	);
 
-	/* Gold accent palette */
-	$wp_customize->add_setting( 'esb_gold_accent', [
-		'default'           => 'gold',
-		'sanitize_callback' => 'esb_sanitize_gold_accent',
+	/* ---- Theme Colour Palette ---- */
+	$wp_customize->add_setting( 'esb_theme_palette', [
+		'default'           => 'forest_gold',
+		'sanitize_callback' => 'esb_sanitize_theme_palette',
+		'transport'         => 'refresh',
 	] );
-	$wp_customize->add_control( 'esb_gold_accent', [
-		'label'       => esc_html__( 'Gold Accent', 'excellence-school' ),
-		'description' => esc_html__( 'Accent colour used for buttons, highlights and decorative elements.', 'excellence-school' ),
-		'section'     => 'esb_hero',
-		'type'        => 'radio',
-		'choices'     => [
-			'gold'   => esc_html__( 'Heritage Gold — warm, antique (#c9a23a)', 'excellence-school' ),
-			'bright' => esc_html__( 'Bright Gold — richer, more vivid (#d4af37)', 'excellence-school' ),
-			'copper' => esc_html__( 'Warm Copper — earthy bronze (#c08a3e)', 'excellence-school' ),
-		],
-	] );
+	$wp_customize->add_control(
+		new ESB_Palette_Control(
+			$wp_customize,
+			'esb_theme_palette',
+			[
+				'label'       => esc_html__( 'Colour Palette', 'excellence-school' ),
+				'description' => esc_html__( 'Pick a colour palette — applies across the entire site (header, buttons, headings, footer).', 'excellence-school' ),
+				'section'     => 'esb_hero',
+				'choices'     => [
+					'forest_gold'     => [
+						'label'    => esc_html__( 'Forest & Gold', 'excellence-school' ),
+						'desc'     => esc_html__( 'Deep green + warm gold (default)', 'excellence-school' ),
+						'swatches' => [ '#07321f', '#11603c', '#c9a23a', '#dcc068', '#f8f5ec' ],
+					],
+					'royal_navy'      => [
+						'label'    => esc_html__( 'Royal Navy & Gold', 'excellence-school' ),
+						'desc'     => esc_html__( 'Dark navy + classic gold', 'excellence-school' ),
+						'swatches' => [ '#0d1b2a', '#1e3a58', '#c9a23a', '#dcc068', '#f3f6fb' ],
+					],
+					'maroon_copper'   => [
+						'label'    => esc_html__( 'Maroon & Copper', 'excellence-school' ),
+						'desc'     => esc_html__( 'Deep burgundy + warm bronze', 'excellence-school' ),
+						'swatches' => [ '#2e0a0a', '#7c2020', '#bf8a50', '#d4a870', '#fdf6f0' ],
+					],
+					'midnight_indigo' => [
+						'label'    => esc_html__( 'Midnight Indigo & Gold', 'excellence-school' ),
+						'desc'     => esc_html__( 'Deep indigo + classic gold', 'excellence-school' ),
+						'swatches' => [ '#16103c', '#2e2480', '#c9a23a', '#dcc068', '#f5f4ff' ],
+					],
+					'slate_teal'      => [
+						'label'    => esc_html__( 'Slate & Teal', 'excellence-school' ),
+						'desc'     => esc_html__( 'Dark slate + fresh teal accent', 'excellence-school' ),
+						'swatches' => [ '#1a2330', '#2d3d52', '#12a0a0', '#2ebcbc', '#f0f8f8' ],
+					],
+				],
+			]
+		)
+	);
 
-	/* Surface / background tone */
-	$wp_customize->add_setting( 'esb_surface_tone', [
-		'default'           => 'ivory',
-		'sanitize_callback' => 'esb_sanitize_surface_tone',
+	/* ---- Font Pairing ---- */
+	$wp_customize->add_setting( 'esb_font_pairing', [
+		'default'           => 'classic',
+		'sanitize_callback' => 'esb_sanitize_font_pairing',
+		'transport'         => 'refresh',
 	] );
-	$wp_customize->add_control( 'esb_surface_tone', [
-		'label'       => esc_html__( 'Page Background Tone', 'excellence-school' ),
-		'description' => esc_html__( 'Warm neutral used as the page background and card surfaces.', 'excellence-school' ),
-		'section'     => 'esb_hero',
-		'type'        => 'radio',
-		'choices'     => [
-			'ivory'      => esc_html__( 'Ivory — crisp & light (#f8f5ec)', 'excellence-school' ),
-			'warm_cream' => esc_html__( 'Warm Cream — soft & inviting (#f5efe2)', 'excellence-school' ),
-			'soft_sand'  => esc_html__( 'Soft Sand — deeper warmth (#f1ead9)', 'excellence-school' ),
-		],
-	] );
+	$wp_customize->add_control(
+		new ESB_Font_Control(
+			$wp_customize,
+			'esb_font_pairing',
+			[
+				'label'       => esc_html__( 'Font Pairing', 'excellence-school' ),
+				'description' => esc_html__( 'Heading + body typeface combination, applied site-wide. Changes take effect on save.', 'excellence-school' ),
+				'section'     => 'esb_hero',
+				'choices'     => [
+					'classic'      => [
+						'label'       => esc_html__( 'Classic Prestige (default)', 'excellence-school' ),
+						'display'     => '"Playfair Display", Georgia, serif',
+						'body'        => '"Plus Jakarta Sans", system-ui, sans-serif',
+						'sample'      => esc_html__( 'Excellence Awaits', 'excellence-school' ),
+						'body_sample' => esc_html__( 'Playfair Display + Plus Jakarta Sans', 'excellence-school' ),
+					],
+					'modern'       => [
+						'label'       => esc_html__( 'Modern Serif', 'excellence-school' ),
+						'display'     => '"DM Serif Display", Georgia, serif',
+						'body'        => '"DM Sans", system-ui, sans-serif',
+						'sample'      => esc_html__( 'Excellence Awaits', 'excellence-school' ),
+						'body_sample' => esc_html__( 'DM Serif Display + DM Sans', 'excellence-school' ),
+					],
+					'elegant'      => [
+						'label'       => esc_html__( 'Elegant Scholar', 'excellence-school' ),
+						'display'     => '"Cormorant Garamond", Georgia, serif',
+						'body'        => '"Lato", system-ui, sans-serif',
+						'sample'      => esc_html__( 'Excellence Awaits', 'excellence-school' ),
+						'body_sample' => esc_html__( 'Cormorant Garamond + Lato', 'excellence-school' ),
+					],
+					'academic'     => [
+						'label'       => esc_html__( 'Academic', 'excellence-school' ),
+						'display'     => '"EB Garamond", Georgia, serif',
+						'body'        => '"Source Sans 3", system-ui, sans-serif',
+						'sample'      => esc_html__( 'Excellence Awaits', 'excellence-school' ),
+						'body_sample' => esc_html__( 'EB Garamond + Source Sans 3', 'excellence-school' ),
+					],
+					'contemporary' => [
+						'label'       => esc_html__( 'Contemporary', 'excellence-school' ),
+						'display'     => '"Fraunces", Georgia, serif',
+						'body'        => '"Nunito", system-ui, sans-serif',
+						'sample'      => esc_html__( 'Excellence Awaits', 'excellence-school' ),
+						'body_sample' => esc_html__( 'Fraunces + Nunito', 'excellence-school' ),
+					],
+				],
+			]
+		)
+	);
 
 	/* ----- Section: Board Results ----- */
 	$wp_customize->add_section(
@@ -394,10 +470,12 @@ function esb_sanitize_checkbox( $input ): string {
 	return $input ? '1' : '';
 }
 
-function esb_sanitize_gold_accent( string $input ): string {
-	return in_array( $input, [ 'gold', 'bright', 'copper' ], true ) ? $input : 'gold';
+function esb_sanitize_theme_palette( string $input ): string {
+	$valid = [ 'forest_gold', 'royal_navy', 'maroon_copper', 'midnight_indigo', 'slate_teal' ];
+	return in_array( $input, $valid, true ) ? $input : 'forest_gold';
 }
 
-function esb_sanitize_surface_tone( string $input ): string {
-	return in_array( $input, [ 'ivory', 'warm_cream', 'soft_sand' ], true ) ? $input : 'ivory';
+function esb_sanitize_font_pairing( string $input ): string {
+	$valid = [ 'classic', 'modern', 'elegant', 'academic', 'contemporary' ];
+	return in_array( $input, $valid, true ) ? $input : 'classic';
 }

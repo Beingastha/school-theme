@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ESB_VERSION', '1.8.0' );
+define( 'ESB_VERSION', '2.4.11' );
 define( 'ESB_DIR', get_template_directory() );
 define( 'ESB_URI', get_template_directory_uri() );
 
@@ -36,9 +36,41 @@ function esb_setup(): void {
    ========================================================================= */
 add_action( 'wp_enqueue_scripts', 'esb_enqueue_assets' );
 function esb_enqueue_assets(): void {
+	/* ── Font pairings ──────────────────────────────────────────── */
+	$esb_font_pairings = [
+		'classic' => [
+			'google'  => 'Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Hind:wght@400;500;600',
+			'display' => '"Playfair Display", Georgia, serif',
+			'body'    => '"Plus Jakarta Sans", "Hind", system-ui, -apple-system, sans-serif',
+		],
+		'modern' => [
+			'google'  => 'DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700',
+			'display' => '"DM Serif Display", Georgia, serif',
+			'body'    => '"DM Sans", system-ui, -apple-system, sans-serif',
+		],
+		'elegant' => [
+			'google'  => 'Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@400;700',
+			'display' => '"Cormorant Garamond", Georgia, serif',
+			'body'    => '"Lato", system-ui, -apple-system, sans-serif',
+		],
+		'academic' => [
+			'google'  => 'EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600;700',
+			'display' => '"EB Garamond", Georgia, serif',
+			'body'    => '"Source Sans 3", system-ui, -apple-system, sans-serif',
+		],
+		'contemporary' => [
+			'google'  => 'Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Nunito:wght@400;500;600;700',
+			'display' => '"Fraunces", Georgia, serif',
+			'body'    => '"Nunito", system-ui, -apple-system, sans-serif',
+		],
+	];
+
+	$font_key   = get_theme_mod( 'esb_font_pairing', 'classic' );
+	$font_pair  = $esb_font_pairings[ $font_key ] ?? $esb_font_pairings['classic'];
+
 	wp_enqueue_style(
 		'esb-fonts',
-		'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Hind:wght@400;500;600&display=swap',
+		'https://fonts.googleapis.com/css2?family=' . $font_pair['google'] . '&display=swap',
 		[],
 		null
 	);
@@ -79,34 +111,63 @@ function esb_enqueue_assets(): void {
 		true
 	);
 
-	/* Inject Customizer colour tokens as CSS custom property overrides */
-	$accent_palettes = [
-		'gold'   => [ '#dcc068', '#c9a23a', '#b8901f' ],
-		'bright' => [ '#e6cf8a', '#d4af37', '#a9821a' ],
-		'copper' => [ '#d8b48a', '#c08a3e', '#9a6a28' ],
-	];
-	$surface_tones = [
-		'ivory'      => '#f8f5ec',
-		'warm_cream' => '#f5efe2',
-		'soft_sand'  => '#f1ead9',
+	/* ── Theme colour palettes ──────────────────────────────────── */
+	$esb_theme_palettes = [
+		'forest_gold' => [
+			'--green-900' => '#07321f', '--green-800' => '#0b4429',
+			'--green-700' => '#11603c', '--green-600' => '#19764c', '--green-500' => '#2a8a5e',
+			'--gold-700'  => '#a37d1b', '--gold-600'  => '#b8901f',
+			'--gold-500'  => '#c9a23a', '--gold-400'  => '#dcc068', '--gold-300'  => '#ecd9a0',
+			'--ivory'     => '#f8f5ec', '--cream'     => '#fcfaf4',
+			'--ink'       => '#16201a', '--muted'     => '#5c6b60',
+		],
+		'royal_navy' => [
+			'--green-900' => '#0d1b2a', '--green-800' => '#152236',
+			'--green-700' => '#1e3a58', '--green-600' => '#255070', '--green-500' => '#2e6892',
+			'--gold-700'  => '#a37d1b', '--gold-600'  => '#b8901f',
+			'--gold-500'  => '#c9a23a', '--gold-400'  => '#dcc068', '--gold-300'  => '#ecd9a0',
+			'--ivory'     => '#f3f6fb', '--cream'     => '#e8eef7',
+			'--ink'       => '#0d1b2a', '--muted'     => '#4a607a',
+		],
+		'maroon_copper' => [
+			'--green-900' => '#2e0a0a', '--green-800' => '#4a1212',
+			'--green-700' => '#7c2020', '--green-600' => '#9e2e2e', '--green-500' => '#b84040',
+			'--gold-700'  => '#8b5e2a', '--gold-600'  => '#a47240',
+			'--gold-500'  => '#bf8a50', '--gold-400'  => '#d4a870', '--gold-300'  => '#e8c99a',
+			'--ivory'     => '#fdf6f0', '--cream'     => '#f9ece0',
+			'--ink'       => '#2e0a0a', '--muted'     => '#7a5050',
+		],
+		'midnight_indigo' => [
+			'--green-900' => '#16103c', '--green-800' => '#201858',
+			'--green-700' => '#2e2480', '--green-600' => '#3c3098', '--green-500' => '#4c3eb0',
+			'--gold-700'  => '#a37d1b', '--gold-600'  => '#b8901f',
+			'--gold-500'  => '#c9a23a', '--gold-400'  => '#dcc068', '--gold-300'  => '#ecd9a0',
+			'--ivory'     => '#f5f4ff', '--cream'     => '#eeebff',
+			'--ink'       => '#16103c', '--muted'     => '#5e5680',
+		],
+		'slate_teal' => [
+			'--green-900' => '#1a2330', '--green-800' => '#232f3e',
+			'--green-700' => '#2d3d52', '--green-600' => '#384d66', '--green-500' => '#43627e',
+			'--gold-700'  => '#0c7070', '--gold-600'  => '#0e8888',
+			'--gold-500'  => '#12a0a0', '--gold-400'  => '#2ebcbc', '--gold-300'  => '#6ed6d6',
+			'--ivory'     => '#f0f8f8', '--cream'     => '#e4f3f3',
+			'--ink'       => '#1a2330', '--muted'     => '#4a5e70',
+		],
 	];
 
-	$accent_key  = get_theme_mod( 'esb_gold_accent', 'gold' );
-	$surface_key = get_theme_mod( 'esb_surface_tone', 'ivory' );
-	$accent      = $accent_palettes[ $accent_key ] ?? $accent_palettes['gold'];
-	$ivory       = $surface_tones[ $surface_key ] ?? '#f8f5ec';
+	$palette_key = get_theme_mod( 'esb_theme_palette', 'forest_gold' );
+	$palette     = $esb_theme_palettes[ $palette_key ] ?? $esb_theme_palettes['forest_gold'];
 
-	wp_add_inline_style(
-		'esb-design-system',
-		sprintf(
-			':root{--gold-400:%s;--gold-500:%s;--gold-600:%s;--gold-700:%s;--ivory:%s}',
-			esc_attr( $accent[0] ),
-			esc_attr( $accent[1] ),
-			esc_attr( $accent[2] ),
-			esc_attr( $accent[2] ),
-			esc_attr( $ivory )
-		)
-	);
+	/* Build :root { } block — palette vars + font vars */
+	$css_vars  = ':root{';
+	foreach ( $palette as $var => $val ) {
+		$css_vars .= $var . ':' . esc_attr( $val ) . ';';
+	}
+	$css_vars .= '--ff-display:' . esc_attr( $font_pair['display'] ) . ';';
+	$css_vars .= '--ff-body:'    . esc_attr( $font_pair['body'] )    . ';';
+	$css_vars .= '}';
+
+	wp_add_inline_style( 'esb-design-system', $css_vars );
 
 	$hero_variant = get_theme_mod( 'esb_hero_variant', '1' );
 	wp_add_inline_script(
@@ -124,6 +185,7 @@ require_once ESB_DIR . '/inc/custom-post-types.php';
 /* =========================================================================
    Customizer
    ========================================================================= */
+require_once ESB_DIR . '/inc/customizer-controls.php';
 require_once ESB_DIR . '/inc/customizer.php';
 
 /* =========================================================================

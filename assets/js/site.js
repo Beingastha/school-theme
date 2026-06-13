@@ -47,6 +47,18 @@
   }
 
   /* =========================================================
+     Drawer dropdown accordions (About / Academics / Student Corner)
+  ========================================================= */
+  document.querySelectorAll(".drawer-nav .nav-item.has-children > .nav-link").forEach(function (link) {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var item = link.closest(".nav-item");
+      if (item) item.classList.toggle("open");
+    });
+  });
+
+  /* =========================================================
      Language toggle (EN / HI)
   ========================================================= */
   var LANG_KEY = "esb-lang";

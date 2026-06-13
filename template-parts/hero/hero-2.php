@@ -13,23 +13,24 @@ $short_name    = esb_opt( 'esb_school_short_name', 'Subhash Excellence School' )
 $eyebrow       = esb_opt( 'esb_hero_eyebrow', '' ) ?: ( 'Estd. ' . $estd . ' · ' . $short_name );
 $eyebrow_hi    = 'स्थापना ' . $estd . ' · ' . $short_name;
 
-$h1  = esb_pg( 'hero2_h1',  'Where Excellence Becomes a Habit.' );
-$sub = esb_pg( 'hero2_sub', 'A premier government institution in Bhopal offering Science, Commerce and Humanities with modern labs, a tinkering lab, and championship sports.' );
+$h1   = esb_pg( 'hero2_h1',   'Where Excellence Becomes a Habit.' );
+$sub  = esb_pg( 'hero2_sub',  'A premier government institution in Bhopal offering Science, Commerce and Humanities with modern labs, a tinkering lab, and championship sports.' );
+$cta1 = esb_pg( 'hero2_cta1', 'Apply for Admission' );
+$cta2 = esb_pg( 'hero2_cta2', 'Explore Academics' );
 
 /*
  * For the typewriter effect we extract the "cycling word" from the headline.
- * Default: wrap "Excellence" with cycling alternatives.
+ * The first word in the pipe-separated list is the word replaced in the h1.
  * The cycle words are the same language as the hero (EN only — cycler doesn't switch with lang toggle).
  */
-$cycle_words = 'Excellence|Distinction|Achievement|Heritage';
-// Replace first occurrence of "Excellence" in h1 with the cycle span if it exists.
-$h1_rendered = $h1;
-if ( str_contains( $h1, 'Excellence' ) ) {
+$cycle_words  = esb_pg( 'hero2_cycle_words', 'Excellence|Distinction|Achievement|Heritage' );
+$first_word   = explode( '|', $cycle_words )[0]; // e.g. "Excellence"
+$h1_rendered  = $h1;
+if ( $first_word && str_contains( $h1, $first_word ) ) {
 	$h1_rendered = str_replace(
-		'Excellence',
-		'<span class="type-cycle" data-words="' . esc_attr( $cycle_words ) . '" aria-label="Excellence">Excellence</span><br>',
-		$h1,
-		$count
+		$first_word,
+		'<span class="type-cycle" data-words="' . esc_attr( $cycle_words ) . '" aria-label="' . esc_attr( $first_word ) . '">' . esc_html( $first_word ) . '</span><br>',
+		$h1
 	);
 }
 ?>
@@ -74,13 +75,13 @@ if ( str_contains( $h1, 'Excellence' ) ) {
 				<div class="cta-row hero-enter" data-delay="4">
 					<a href="<?php echo esc_url( esb_page_url( 'admissions' ) ); ?>"
 					   class="btn btn-gold btn-arrow"
-					   data-en="Apply for Admission" data-hi="प्रवेश हेतु आवेदन">
-						<?php esc_html_e( 'Apply for Admission', 'excellence-school' ); ?>
+					   data-en="<?php echo esc_attr( $cta1 ); ?>" data-hi="प्रवेश हेतु आवेदन">
+						<?php echo esc_html( $cta1 ); ?>
 					</a>
 					<a href="<?php echo esc_url( esb_page_url( 'academics' ) ); ?>"
 					   class="btn btn-ghost-light"
-					   data-en="Explore Academics" data-hi="शिक्षा देखें">
-						<?php esc_html_e( 'Explore Academics', 'excellence-school' ); ?>
+					   data-en="<?php echo esc_attr( $cta2 ); ?>" data-hi="शिक्षा देखें">
+						<?php echo esc_html( $cta2 ); ?>
 					</a>
 				</div>
 

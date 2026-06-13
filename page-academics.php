@@ -98,6 +98,69 @@ foreach ( $approach_defaults as $i => [ $en, $hi, $desc_en, $desc_hi ] ) {
 	];
 }
 
+/* Curriculum levels (Classes I-XII) */
+$curr_intro = esb_pg( 'acad_curr_intro', 'Our curriculum follows the Madhya Pradesh Board of Secondary Education (MPBSE) syllabus for Classes I-XII, aligned with the National Curriculum Framework (NCF), the National Education Policy (NEP) 2020 and NCERT standards — building a strong foundation from the primary years through to board-exam success.' );
+
+$level_defaults = [
+	1 => [
+		'Primary — Classes I-V', 'प्राथमिक — कक्षा I-V',
+		'Foundational literacy, numeracy and environmental awareness through activity-based, NEP-aligned learning.',
+		'गतिविधि-आधारित, एनईपी-अनुरूप शिक्षण के माध्यम से बुनियादी साक्षरता, अंकगणित व पर्यावरणीय जागरूकता।',
+	],
+	2 => [
+		'Middle — Classes VI-VIII', 'मध्य — कक्षा VI-VIII',
+		'Subject-wise teaching begins, building conceptual understanding in Science, Mathematics, Social Science, Hindi and English.',
+		'विषयवार शिक्षण आरंभ — विज्ञान, गणित, सामाजिक विज्ञान, हिंदी व अंग्रेजी में वैचारिक समझ का निर्माण।',
+	],
+	3 => [
+		'Secondary — Classes IX-X', 'माध्यमिक — कक्षा IX-X',
+		'Focused preparation for MP Board (MPBSE) Class X examinations, with regular tests and NCERT-based teaching.',
+		'एमपी बोर्ड (एमपीबीएसई) कक्षा 10 परीक्षाओं की केंद्रित तैयारी, नियमित परीक्षण व एनसीईआरटी-आधारित शिक्षण के साथ।',
+	],
+	4 => [
+		'Senior Secondary — Classes XI-XII', 'वरिष्ठ माध्यमिक — कक्षा XI-XII',
+		'Specialisation in Science, Commerce or Humanities streams with board-exam and competitive-exam coaching.',
+		'विज्ञान, वाणिज्य या मानविकी संकाय में विशेषज्ञता, बोर्ड व प्रतियोगी परीक्षा कोचिंग के साथ।',
+	],
+];
+$levels = [];
+foreach ( $level_defaults as $i => [ $name_en, $name_hi, $desc_en, $desc_hi ] ) {
+	$levels[] = [
+		'name_en' => esb_pg( "acad_level_{$i}_name", $name_en ),
+		'name_hi' => $name_hi,
+		'desc_en' => esb_pg( "acad_level_{$i}_desc", $desc_en ),
+		'desc_hi' => $desc_hi,
+	];
+}
+
+/* Examination pattern */
+$exam_defaults = [
+	1 => [
+		'Periodic Tests', 'आवधिक परीक्षण',
+		'Regular class tests are held throughout the year to track progress and identify areas needing extra attention.',
+		'वर्ष भर नियमित कक्षा परीक्षण आयोजित किए जाते हैं ताकि प्रगति पर नज़र रखी जा सके और अतिरिक्त ध्यान देने योग्य विषयों की पहचान हो सके।',
+	],
+	2 => [
+		'Half-Yearly Examinations', 'अर्ध-वार्षिक परीक्षा',
+		'A comprehensive mid-term exam assesses learning from the first half of the academic syllabus.',
+		'एक व्यापक अर्ध-वार्षिक परीक्षा शैक्षणिक पाठ्यक्रम के पहले भाग के अधिगम का आकलन करती है।',
+	],
+	3 => [
+		'Annual / Board Examinations', 'वार्षिक / बोर्ड परीक्षा',
+		'Final examinations cover the full syllabus — conducted by the school for Classes I-IX & XI, and by MPBSE for Classes X & XII.',
+		'अंतिम परीक्षाएं पूरे पाठ्यक्रम को कवर करती हैं — कक्षा I-IX व XI के लिए विद्यालय द्वारा, तथा कक्षा X व XII के लिए एमपीबीएसई द्वारा आयोजित।',
+	],
+];
+$exams = [];
+foreach ( $exam_defaults as $i => [ $title_en, $title_hi, $desc_en, $desc_hi ] ) {
+	$exams[] = [
+		'title_en' => esb_pg( "acad_exam_{$i}_title", $title_en ),
+		'title_hi' => $title_hi,
+		'desc_en'  => esb_pg( "acad_exam_{$i}_desc", $desc_en ),
+		'desc_hi'  => $desc_hi,
+	];
+}
+
 /* Result bars */
 $bar_defaults = [
 	1 => [ 'Class XII · Science',    'कक्षा 12 · विज्ञान',  99 ],
@@ -145,6 +208,28 @@ foreach ( $acfac_defaults as $i => [ $en, $hi, $desc, $img ] ) {
 			   data-hi="विज्ञान, वाणिज्य व मानविकी में कठोर, भविष्य-तैयार पाठ्यक्रम।">
 				<?php echo esc_html( $hero_sub ); ?>
 			</p>
+		</div>
+	</section>
+
+	<!-- Curriculum Across Classes -->
+	<section class="section">
+		<div class="container">
+			<div class="section-head reveal">
+				<span class="eyebrow" data-en="Curriculum" data-hi="पाठ्यक्रम"><?php esc_html_e( 'Curriculum', 'excellence-school' ); ?></span>
+				<h2 data-en="A Continuum From Class I to XII" data-hi="कक्षा I से XII तक की निरंतरता"><?php esc_html_e( 'A Continuum From Class I to XII', 'excellence-school' ); ?></h2>
+				<p data-en="<?php echo esc_attr( $curr_intro ); ?>"
+				   data-hi="हमारा पाठ्यक्रम कक्षा I-XII के लिए मध्य प्रदेश माध्यमिक शिक्षा मंडल (एमपीबीएसई) के पाठ्यक्रम पर आधारित है, जो राष्ट्रीय पाठ्यचर्या रूपरेखा (एनसीएफ), राष्ट्रीय शिक्षा नीति (एनईपी) 2020 व एनसीईआरटी मानकों के अनुरूप है — जो प्राथमिक वर्षों से लेकर बोर्ड परीक्षा की सफलता तक एक मजबूत आधार तैयार करता है।">
+					<?php echo esc_html( $curr_intro ); ?>
+				</p>
+			</div>
+			<div class="grid levels-grid">
+				<?php foreach ( $levels as $level ) : ?>
+				<div class="card level-card reveal">
+					<div class="n" data-en="<?php echo esc_attr( $level['name_en'] ); ?>" data-hi="<?php echo esc_attr( $level['name_hi'] ); ?>"><?php echo esc_html( $level['name_en'] ); ?></div>
+					<p data-en="<?php echo esc_attr( $level['desc_en'] ); ?>" data-hi="<?php echo esc_attr( $level['desc_hi'] ); ?>"><?php echo esc_html( $level['desc_en'] ); ?></p>
+				</div>
+				<?php endforeach; ?>
+			</div>
 		</div>
 	</section>
 
@@ -197,6 +282,25 @@ foreach ( $acfac_defaults as $i => [ $en, $hi, $desc, $img ] ) {
 		</div>
 	</section>
 
+	<!-- Examination Pattern -->
+	<section class="section">
+		<div class="container">
+			<div class="section-head center reveal">
+				<span class="eyebrow center" data-en="Assessment" data-hi="मूल्यांकन"><?php esc_html_e( 'Assessment', 'excellence-school' ); ?></span>
+				<h2 data-en="Examination Pattern" data-hi="परीक्षा प्रणाली"><?php esc_html_e( 'Examination Pattern', 'excellence-school' ); ?></h2>
+			</div>
+			<div class="grid examp-grid">
+				<?php foreach ( $exams as $exam ) : ?>
+				<div class="card approach-card reveal">
+					<div class="ic"><span class="diamond"></span></div>
+					<h3 data-en="<?php echo esc_attr( $exam['title_en'] ); ?>" data-hi="<?php echo esc_attr( $exam['title_hi'] ); ?>"><?php echo esc_html( $exam['title_en'] ); ?></h3>
+					<p data-en="<?php echo esc_attr( $exam['desc_en'] ); ?>" data-hi="<?php echo esc_attr( $exam['desc_hi'] ); ?>"><?php echo esc_html( $exam['desc_en'] ); ?></p>
+				</div>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	</section>
+
 	<!-- Board Results -->
 	<section class="section">
 		<div class="container">
@@ -223,9 +327,20 @@ foreach ( $acfac_defaults as $i => [ $en, $hi, $desc, $img ] ) {
 						<?php echo esc_html( $results_desc ); ?>
 					</p>
 					<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:24px">
-						<span class="pill gold" data-en="District Toppers" data-hi="जिला टॉपर"><?php esc_html_e( 'District Toppers', 'excellence-school' ); ?></span>
-						<span class="pill gold" data-en="95%+ Scorers" data-hi="95%+ अंक"><?php esc_html_e( '95%+ Scorers', 'excellence-school' ); ?></span>
-						<span class="pill gold" data-en="State Merit List" data-hi="राज्य मेरिट सूची"><?php esc_html_e( 'State Merit List', 'excellence-school' ); ?></span>
+						<?php
+						$pill_defaults = [
+							1 => [ 'District Toppers', 'जिला टॉपर' ],
+							2 => [ '95%+ Scorers', '95%+ अंक' ],
+							3 => [ 'State Merit List', 'राज्य मेरिट सूची' ],
+						];
+						foreach ( $pill_defaults as $i => [ $pill_en_default, $pill_hi_default ] ) :
+							$pill_en  = esb_pg( "acad_pill_{$i}_en", $pill_en_default );
+							$pill_hi  = esb_pg( "acad_pill_{$i}_hi", $pill_hi_default );
+							$pill_url = esb_pg( "acad_pill_{$i}_url", '' );
+							$tag      = $pill_url ? 'a' : 'span';
+						?>
+						<<?php echo esc_html( $tag ); ?> class="pill gold"<?php echo $pill_url ? ' href="' . esc_url( $pill_url ) . '"' : ''; ?> data-en="<?php echo esc_attr( $pill_en ); ?>" data-hi="<?php echo esc_attr( $pill_hi ); ?>"><?php echo esc_html( $pill_en ); ?></<?php echo esc_html( $tag ); ?>>
+						<?php endforeach; ?>
 					</div>
 				</div>
 			</div>

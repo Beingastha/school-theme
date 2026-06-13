@@ -6,7 +6,8 @@
  */
 $principal_name  = esb_opt( 'esb_principal_name', 'Dr. (Mrs.) Anjali Verma' );
 $principal_role  = esb_opt( 'esb_principal_role', 'Principal, School for Excellence, Bhopal' );
-$principal_quote = esb_opt( 'esb_principal_quote', 'Our mission is simple — to ensure that every child who walks through our gates leaves with the knowledge, character and confidence to lead. Excellence here is not a privilege; it is a promise we keep to every family.' );
+$principal_quote    = esb_opt( 'esb_principal_quote', 'Our mission is simple — to ensure that every child who walks through our gates leaves with the knowledge, character and confidence to lead. Excellence here is not a privilege; it is a promise we keep to every family.' );
+$principal_quote_hi = esb_opt( 'esb_principal_quote_hi', 'हमारा उद्देश्य सरल है — हमारे द्वार से गुजरने वाला प्रत्येक बच्चा ज्ञान, चरित्र और नेतृत्व का आत्मविश्वास लेकर जाए। यहाँ उत्कृष्टता कोई विशेषाधिकार नहीं, बल्कि हर परिवार से किया गया वादा है।' );
 $portrait_id     = (int) get_theme_mod( 'esb_principal_image', 0 );
 $portrait_url    = $portrait_id ? wp_get_attachment_image_url( $portrait_id, 'large' ) : '';
 ?>
@@ -30,7 +31,7 @@ $portrait_url    = $portrait_id ? wp_get_attachment_image_url( $portrait_id, 'la
 				</span>
 				<span class="quote-mark">"</span>
 				<blockquote data-en="<?php echo esc_attr( $principal_quote ); ?>"
-				            data-hi="">
+				            data-hi="<?php echo esc_attr( $principal_quote_hi ); ?>">
 					<?php echo esc_html( $principal_quote ); ?>
 				</blockquote>
 				<div class="signoff">

@@ -65,12 +65,15 @@ function esb_pg_sanitize( $raw ): array {
 	if ( ! is_array( $raw ) ) {
 		return [];
 	}
-	$clean = [];
+	// Merge with existing data so saving one tab never wipes another tab's fields.
+	$clean = (array) get_option( 'esb_page_content', [] );
 	foreach ( $raw as $key => $value ) {
 		$key = sanitize_key( $key );
 		// Percentage fields stay numeric; everything else is text.
 		if ( str_ends_with( $key, '_pct' ) ) {
 			$clean[ $key ] = (string) min( 100, max( 0, absint( $value ) ) );
+		} elseif ( str_ends_with( $key, '_url' ) ) {
+			$clean[ $key ] = esc_url_raw( wp_unslash( (string) $value ) );
 		} else {
 			$clean[ $key ] = sanitize_textarea_field( wp_unslash( (string) $value ) );
 		}
@@ -115,6 +118,34 @@ function esb_pg_admin_styles(): void {
 	.esb-pg-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 	.esb-pg-card { border: 1px solid #e2e4e7; border-radius: 4px; padding: 14px; background: #fafafa; }
 	.esb-pg-card-num { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #9ca2a7; margin-bottom: 8px; }
+
+	/* Section visibility toggles */
+	.esb-pg-toggle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+	.esb-pg-toggle {
+		display: flex; align-items: flex-start; gap: 12px;
+		padding: 10px 8px; border-radius: 4px; cursor: pointer;
+		transition: background-color .12s ease;
+	}
+	.esb-pg-toggle:hover { background: #f0f6fc; }
+	.esb-pg-toggle-switch { position: relative; flex: 0 0 auto; margin-top: 2px; }
+	.esb-pg-toggle-switch input[type="checkbox"] {
+		position: absolute; opacity: 0; width: 36px; height: 20px; margin: 0; cursor: pointer;
+	}
+	.esb-pg-toggle-track {
+		display: block; width: 36px; height: 20px; border-radius: 10px;
+		background: #c3c4c7; transition: background-color .15s ease; position: relative;
+	}
+	.esb-pg-toggle-thumb {
+		position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;
+		border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25);
+		transition: transform .15s ease;
+	}
+	.esb-pg-toggle-switch input[type="checkbox"]:checked ~ .esb-pg-toggle-track { background: #11603c; }
+	.esb-pg-toggle-switch input[type="checkbox"]:checked ~ .esb-pg-toggle-track .esb-pg-toggle-thumb { transform: translateX(16px); }
+	.esb-pg-toggle-switch input[type="checkbox"]:focus-visible ~ .esb-pg-toggle-track { outline: 2px solid #11603c; outline-offset: 2px; }
+	.esb-pg-toggle-text { display: flex; flex-direction: column; font-size: 13px; line-height: 1.4; }
+	.esb-pg-toggle-text strong { color: #1d2327; font-size: 13px; }
+	.esb-pg-toggle-desc { color: #757575; font-size: 12px; margin-top: 2px; }
 	</style>
 	<?php
 }
@@ -133,6 +164,7 @@ function esb_pg_settings_page(): void {
 		'about'      => __( 'ℹ️ About', 'excellence-school' ),
 		'academics'  => __( '📚 Academics', 'excellence-school' ),
 		'admissions' => __( '📋 Admissions', 'excellence-school' ),
+		'guide'      => __( '📖 Content Guide', 'excellence-school' ),
 	];
 
 	$active = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'home'; // phpcs:ignore WordPress.Security.NonceVerification
@@ -155,6 +187,11 @@ function esb_pg_settings_page(): void {
 			<?php endforeach; ?>
 		</div>
 
+		<?php if ( 'guide' === $active ) : ?>
+			<div class="esb-pg-section">
+				<?php esb_pg_tab_guide(); ?>
+			</div>
+		<?php else : ?>
 		<form method="post" action="options.php" class="esb-pg-section">
 			<?php settings_fields( 'esb_page_content_group' ); ?>
 			<input type="hidden" name="_esb_tab" value="<?php echo esc_attr( $active ); ?>" />
@@ -171,6 +208,7 @@ function esb_pg_settings_page(): void {
 
 			<?php submit_button( __( 'Save Changes', 'excellence-school' ) ); ?>
 		</form>
+		<?php endif; ?>
 	</div>
 	<?php
 }
@@ -220,16 +258,95 @@ function esb_pg_number( string $key, string $label, string $default = '0', int $
 	<?php
 }
 
+function esb_pg_url( string $key, string $label, string $default = '' ): void {
+	$value = esb_pg( $key, $default );
+	?>
+	<div class="esb-pg-field">
+		<label for="esb_pg_<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $label ); ?></label>
+		<input type="url"
+		       id="esb_pg_<?php echo esc_attr( $key ); ?>"
+		       name="esb_page_content[<?php echo esc_attr( $key ); ?>]"
+		       value="<?php echo esc_attr( $value ); ?>"
+		       placeholder="https://" />
+	</div>
+	<?php
+}
+
+/**
+ * Toggle switch for showing/hiding a homepage section.
+ * Stores '1' (visible) or '0' (hidden) under key "show_{$key}".
+ *
+ * Uses the hidden-input + checkbox pattern so an unchecked box still
+ * submits a value (browsers omit unchecked checkboxes entirely).
+ */
+function esb_pg_toggle( string $key, string $label, string $description = '' ): void {
+	$field   = "show_{$key}";
+	$checked = '0' !== esb_pg( $field, '1' );
+	?>
+	<label class="esb-pg-toggle" for="esb_pg_<?php echo esc_attr( $field ); ?>">
+		<input type="hidden" name="esb_page_content[<?php echo esc_attr( $field ); ?>]" value="0" />
+		<span class="esb-pg-toggle-switch">
+			<input type="checkbox"
+			       id="esb_pg_<?php echo esc_attr( $field ); ?>"
+			       name="esb_page_content[<?php echo esc_attr( $field ); ?>]"
+			       value="1"
+			       <?php checked( $checked ); ?> />
+			<span class="esb-pg-toggle-track"><span class="esb-pg-toggle-thumb"></span></span>
+		</span>
+		<span class="esb-pg-toggle-text">
+			<strong><?php echo esc_html( $label ); ?></strong>
+			<?php if ( $description ) : ?>
+				<span class="esb-pg-toggle-desc"><?php echo esc_html( $description ); ?></span>
+			<?php endif; ?>
+		</span>
+	</label>
+	<?php
+}
+
+/**
+ * Whether a homepage section should be rendered.
+ * Defaults to true (visible) when no choice has been saved yet.
+ *
+ * @param string $key Section key, e.g. 'testimonials'.
+ */
+function esb_section_visible( string $key ): bool {
+	return '0' !== esb_pg( "show_{$key}", '1' );
+}
+
 /* =========================================================================
    Tab: Home
    ========================================================================= */
 
 function esb_pg_tab_home(): void {
 	?>
+	<!-- ---- Section Visibility ---- -->
+	<div class="esb-pg-group">
+		<div class="esb-pg-group-title"><?php esc_html_e( 'Homepage Sections — Show / Hide', 'excellence-school' ); ?></div>
+		<p class="description" style="margin-bottom:10px">
+			<?php esc_html_e( 'Turn any section off to hide it from the homepage. Its content stays saved — switch it back on any time.', 'excellence-school' ); ?>
+		</p>
+		<div class="esb-pg-toggle-grid">
+			<?php
+			esb_pg_toggle( 'circulars', __( 'Circulars & Notices', 'excellence-school' ), __( 'Latest circulars/notices strip with a "View All" button.', 'excellence-school' ) );
+			esb_pg_toggle( 'stats_band', __( 'Key Statistics Band', 'excellence-school' ), __( 'Pass rate, students, years of service strip.', 'excellence-school' ) );
+			esb_pg_toggle( 'why_choose_us', __( 'Why Choose Us', 'excellence-school' ), __( 'Section heading + 6 highlight cards.', 'excellence-school' ) );
+			esb_pg_toggle( 'principal_message', __( "Principal's Message", 'excellence-school' ), __( 'Quote, photo and message from the Principal.', 'excellence-school' ) );
+			esb_pg_toggle( 'academic_excellence', __( 'Academic Excellence', 'excellence-school' ), __( 'Streams, subjects and academic highlights.', 'excellence-school' ) );
+			esb_pg_toggle( 'achievements', __( 'Achievements', 'excellence-school' ), __( 'Badges and award highlights.', 'excellence-school' ) );
+			esb_pg_toggle( 'facilities', __( 'Facilities', 'excellence-school' ), __( 'Labs, library, sports and other facilities.', 'excellence-school' ) );
+			esb_pg_toggle( 'student_life', __( 'Student Life Mosaic', 'excellence-school' ), __( 'Photo mosaic with captions.', 'excellence-school' ) );
+			esb_pg_toggle( 'news_events', __( 'News & Events', 'excellence-school' ), __( 'Latest posts from News & Events.', 'excellence-school' ) );
+			esb_pg_toggle( 'testimonials', __( 'Testimonials', 'excellence-school' ), __( 'Quotes from parents and students.', 'excellence-school' ) );
+			esb_pg_toggle( 'admissions_cta', __( 'Admissions CTA Banner', 'excellence-school' ), __( 'Mid-page "Give Your Child the Excellence" banner.', 'excellence-school' ) );
+			esb_pg_toggle( 'contact', __( 'Contact Section', 'excellence-school' ), __( 'Map, address and enquiry form at the bottom.', 'excellence-school' ) );
+			?>
+		</div>
+	</div>
+
 	<!-- ---- Hero Content ---- -->
 	<div class="esb-pg-group">
-		<div class="esb-pg-group-title"><?php esc_html_e( 'Hero 1 — Stately (full-bleed photo)', 'excellence-school' ); ?></div>
-		<p class="description" style="margin-bottom:10px"><?php esc_html_e( 'Shown when Hero Layout is set to "Stately" in Appearance & Hero.', 'excellence-school' ); ?></p>
+		<div class="esb-pg-group-title"><?php esc_html_e( 'Hero 1 — Full-Bleed Photo', 'excellence-school' ); ?></div>
+		<p class="description" style="margin-bottom:10px"><?php esc_html_e( 'Shown when Hero Layout is set to variant 1 in Appearance → Customize → Hero.', 'excellence-school' ); ?></p>
 		<div class="esb-pg-row">
 			<?php esb_pg_text( 'hero1_h1', 'Main Headline (H1)', 'A Government School of Distinction.' ); ?>
 		</div>
@@ -239,19 +356,29 @@ function esb_pg_tab_home(): void {
 	</div>
 
 	<div class="esb-pg-group">
-		<div class="esb-pg-group-title"><?php esc_html_e( 'Hero 2 — Split (text left, image right)', 'excellence-school' ); ?></div>
-		<p class="description" style="margin-bottom:10px"><?php esc_html_e( 'Shown when Hero Layout is set to "Split".', 'excellence-school' ); ?></p>
+		<div class="esb-pg-group-title"><?php esc_html_e( 'Hero 2 — Dark Prestige (default)', 'excellence-school' ); ?></div>
+		<p class="description" style="margin-bottom:10px"><?php esc_html_e( 'Shown when Hero Layout is set to variant 2 (the default). Deep forest-green full-width hero with gold accents and mini stats.', 'excellence-school' ); ?></p>
 		<div class="esb-pg-row">
 			<?php esb_pg_text( 'hero2_h1', 'Main Headline (H1)', 'Where Excellence Becomes a Habit.' ); ?>
 		</div>
 		<div class="esb-pg-row full" style="margin-top:10px">
 			<?php esb_pg_textarea( 'hero2_sub', 'Subtitle', 'A premier government institution in Bhopal offering Science, Commerce and Humanities with modern labs, a tinkering lab, and championship sports.' ); ?>
 		</div>
+		<div class="esb-pg-row full" style="margin-top:10px">
+			<?php esb_pg_text( 'hero2_cycle_words', 'Cycling Words (pipe-separated)', 'Excellence|Distinction|Achievement|Heritage', 'e.g. Excellence|Distinction|Achievement|Heritage' ); ?>
+			<p class="description" style="margin-top:4px;font-size:12px;color:#777">
+				<?php esc_html_e( 'Separate words with | (pipe). The first word must appear in your Main Headline above — it becomes the animated word.', 'excellence-school' ); ?>
+			</p>
+		</div>
+		<div class="esb-pg-row" style="margin-top:10px">
+			<?php esb_pg_text( 'hero2_cta1', 'Primary Button Label', 'Apply for Admission' ); ?>
+			<?php esb_pg_text( 'hero2_cta2', 'Secondary Button Label', 'Explore Academics' ); ?>
+		</div>
 	</div>
 
 	<div class="esb-pg-group">
-		<div class="esb-pg-group-title"><?php esc_html_e( 'Hero 3 — Crest (centred crest & stats)', 'excellence-school' ); ?></div>
-		<p class="description" style="margin-bottom:10px"><?php esc_html_e( 'Shown when Hero Layout is set to "Crest". The H1 uses the Full School Name from School Identity.', 'excellence-school' ); ?></p>
+		<div class="esb-pg-group-title"><?php esc_html_e( 'Hero 3 — Crest-Forward (centred)', 'excellence-school' ); ?></div>
+		<p class="description" style="margin-bottom:10px"><?php esc_html_e( 'Shown when Hero Layout is set to variant 3. The H1 uses the Full School Name from School Identity → the Subtitle below is the only editable text here.', 'excellence-school' ); ?></p>
 		<div class="esb-pg-row full">
 			<?php esb_pg_textarea( 'hero3_sub', 'Subtitle', "Nurturing tomorrow's leaders through quality education, modern facilities, and holistic development — open to every section of society." ); ?>
 		</div>
@@ -413,6 +540,56 @@ function esb_pg_tab_academics(): void {
 		</div>
 	</div>
 
+	<!-- ---- Curriculum Overview (Classes I-XII) ---- -->
+	<div class="esb-pg-group">
+		<div class="esb-pg-group-title"><?php esc_html_e( 'Curriculum Overview (Classes I-XII)', 'excellence-school' ); ?></div>
+		<div class="esb-pg-row full">
+			<?php esb_pg_textarea( 'acad_curr_intro', 'Intro Paragraph', 'Our curriculum follows the Madhya Pradesh Board of Secondary Education (MPBSE) syllabus for Classes I-XII, aligned with the National Curriculum Framework (NCF), the National Education Policy (NEP) 2020 and NCERT standards — building a strong foundation from the primary years through to board-exam success.' ); ?>
+		</div>
+		<div class="esb-pg-card-grid" style="margin-top:14px">
+			<?php
+			$level_defaults = [
+				1 => [ 'Primary — Classes I-V', 'Foundational literacy, numeracy and environmental awareness through activity-based, NEP-aligned learning.' ],
+				2 => [ 'Middle — Classes VI-VIII', 'Subject-wise teaching begins, building conceptual understanding in Science, Mathematics, Social Science, Hindi and English.' ],
+				3 => [ 'Secondary — Classes IX-X', 'Focused preparation for MP Board (MPBSE) Class X examinations, with regular tests and NCERT-based teaching.' ],
+				4 => [ 'Senior Secondary — Classes XI-XII', 'Specialisation in Science, Commerce or Humanities streams with board-exam and competitive-exam coaching.' ],
+			];
+			foreach ( $level_defaults as $i => [ $name, $desc ] ) :
+			?>
+			<div class="esb-pg-card">
+				<div class="esb-pg-card-num"><?php echo esc_html( "Level $i" ); ?></div>
+				<?php esb_pg_text( "acad_level_{$i}_name", 'Name', $name ); ?>
+				<div style="margin-top:8px">
+					<?php esb_pg_textarea( "acad_level_{$i}_desc", 'Description', $desc ); ?>
+				</div>
+			</div>
+			<?php endforeach; ?>
+		</div>
+	</div>
+
+	<!-- ---- Examination Pattern ---- -->
+	<div class="esb-pg-group">
+		<div class="esb-pg-group-title"><?php esc_html_e( 'Examination Pattern', 'excellence-school' ); ?></div>
+		<div class="esb-pg-card-grid">
+			<?php
+			$exam_defaults = [
+				1 => [ 'Periodic Tests', 'Regular class tests are held throughout the year to track progress and identify areas needing extra attention.' ],
+				2 => [ 'Half-Yearly Examinations', 'A comprehensive mid-term exam assesses learning from the first half of the academic syllabus.' ],
+				3 => [ 'Annual / Board Examinations', 'Final examinations cover the full syllabus — conducted by the school for Classes I-IX & XI, and by MPBSE for Classes X & XII.' ],
+			];
+			foreach ( $exam_defaults as $i => [ $title, $desc ] ) :
+			?>
+			<div class="esb-pg-card">
+				<div class="esb-pg-card-num"><?php echo esc_html( "Item $i" ); ?></div>
+				<?php esb_pg_text( "acad_exam_{$i}_title", 'Title', $title ); ?>
+				<div style="margin-top:8px">
+					<?php esb_pg_textarea( "acad_exam_{$i}_desc", 'Description', $desc ); ?>
+				</div>
+			</div>
+			<?php endforeach; ?>
+		</div>
+	</div>
+
 	<!-- ---- Streams ---- -->
 	<?php
 	$stream_defaults = [
@@ -506,6 +683,27 @@ function esb_pg_tab_academics(): void {
 				<?php esb_pg_text( "acad_bar_{$i}_label", 'Label', $label ); ?>
 				<div style="margin-top:8px">
 					<?php esb_pg_number( "acad_bar_{$i}_pct", 'Pass Rate (%)', (string) $pct, 0, 100 ); ?>
+				</div>
+			</div>
+			<?php endforeach; ?>
+		</div>
+		<div class="esb-pg-card-grid" style="grid-template-columns:1fr 1fr 1fr;margin-top:14px">
+			<?php
+			$pill_defaults = [
+				1 => [ 'District Toppers', 'जिला टॉपर' ],
+				2 => [ '95%+ Scorers', '95%+ अंक' ],
+				3 => [ 'State Merit List', 'राज्य मेरिट सूची' ],
+			];
+			foreach ( $pill_defaults as $i => [ $en, $hi ] ) :
+			?>
+			<div class="esb-pg-card">
+				<div class="esb-pg-card-num"><?php echo esc_html( "Pill $i" ); ?></div>
+				<?php esb_pg_text( "acad_pill_{$i}_en", 'Label (English)', $en ); ?>
+				<div style="margin-top:8px">
+					<?php esb_pg_text( "acad_pill_{$i}_hi", 'Label (Hindi)', $hi ); ?>
+				</div>
+				<div style="margin-top:8px">
+					<?php esb_pg_url( "acad_pill_{$i}_url", 'Link (optional)' ); ?>
 				</div>
 			</div>
 			<?php endforeach; ?>
@@ -690,6 +888,230 @@ function esb_pg_tab_admissions(): void {
 		<div class="esb-pg-row">
 			<?php esb_pg_text( 'adm_cta_h2', 'Headline', "Secure Your Child's Seat Today" ); ?>
 		</div>
+	</div>
+	<?php
+}
+
+/* =========================================================================
+   Tab: Content Guide
+   ========================================================================= */
+
+function esb_pg_tab_guide(): void {
+	$cz = admin_url( 'customize.php' );
+	$mn = admin_url( 'nav-menus.php' );
+	$me = admin_url( 'admin.php?page=esb-page-content&tab=' );
+	?>
+	<style>
+	.esb-guide h2 { font-size:16px; font-weight:700; color:#1d2327; margin:28px 0 6px; padding-bottom:6px; border-bottom:2px solid #dba617; display:inline-block; }
+	.esb-guide h3 { font-size:13px; font-weight:700; color:#1d2327; margin:18px 0 4px; text-transform:uppercase; letter-spacing:.04em; }
+	.esb-guide p, .esb-guide li { font-size:13.5px; color:#3c434a; line-height:1.6; }
+	.esb-guide ul { margin:6px 0 0 18px; }
+	.esb-guide .esb-guide-row { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:16px; }
+	.esb-guide .esb-guide-card { background:#f9f9f9; border:1px solid #e2e4e7; border-radius:6px; padding:18px 20px; }
+	.esb-guide .esb-guide-card h3 { margin-top:0; }
+	.esb-guide .path { display:inline-block; background:#1d2327; color:#fff; font-size:12px; font-weight:600; border-radius:3px; padding:3px 8px; margin:2px 0 8px; letter-spacing:.02em; }
+	.esb-guide .path a { color:#dba617; text-decoration:none; }
+	.esb-guide .path a:hover { text-decoration:underline; }
+	.esb-guide .note { background:#fff8e1; border-left:3px solid #dba617; padding:10px 14px; font-size:13px; color:#555; border-radius:0 4px 4px 0; margin-top:10px; }
+	.esb-guide table { border-collapse:collapse; width:100%; margin-top:10px; font-size:13px; }
+	.esb-guide table th { background:#1d2327; color:#fff; padding:8px 12px; text-align:left; font-weight:600; }
+	.esb-guide table td { padding:8px 12px; border-bottom:1px solid #f0f0f1; vertical-align:top; }
+	.esb-guide table tr:last-child td { border-bottom:none; }
+	.esb-guide table tr:nth-child(even) td { background:#f9f9f9; }
+	</style>
+
+	<div class="esb-guide">
+
+		<p style="font-size:14px;color:#50575e;margin-bottom:4px">
+			<?php esc_html_e( 'This guide tells you exactly where to go in wp-admin to change every piece of text, image and setting on the website.', 'excellence-school' ); ?>
+		</p>
+
+		<!-- ===== SCHOOL IDENTITY ===== -->
+		<h2><?php esc_html_e( '1. School Identity & Contact Details', 'excellence-school' ); ?></h2>
+		<p><?php esc_html_e( 'School name, phone number, email, address, established year, principal name — anything that appears in the header, footer, topbar and contact section.', 'excellence-school' ); ?></p>
+		<div class="path">📍 <a href="<?php echo esc_url( $cz ); ?>" target="_blank"><?php esc_html_e( 'Appearance → Customize → School Identity', 'excellence-school' ); ?></a></div>
+
+		<table>
+			<tr><th><?php esc_html_e( 'What to change', 'excellence-school' ); ?></th><th><?php esc_html_e( 'Setting name', 'excellence-school' ); ?></th></tr>
+			<tr><td><?php esc_html_e( 'Full school name (footer, contact)', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Full School Name', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Short name (header / eyebrow)', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Short School Name', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Tagline under header name', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Header Tagline', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Phone number', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Phone Number', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Email address', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Email Address', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Physical address', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Address', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'UDISE code, established year', 'excellence-school' ); ?></td><td><?php esc_html_e( 'UDISE Code / Established Year', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Principal name & role', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Principal Name / Principal Role', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Social media links', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Facebook / Instagram / LinkedIn / YouTube', 'excellence-school' ); ?></td></tr>
+		</table>
+
+		<!-- ===== HERO SECTION ===== -->
+		<h2><?php esc_html_e( '2. Homepage Hero (the big banner at the top)', 'excellence-school' ); ?></h2>
+		<div class="esb-guide-row">
+			<div class="esb-guide-card">
+				<h3><?php esc_html_e( 'Choose hero layout (1, 2 or 3)', 'excellence-school' ); ?></h3>
+				<div class="path">📍 <a href="<?php echo esc_url( $cz ); ?>" target="_blank"><?php esc_html_e( 'Customize → Hero', 'excellence-school' ); ?></a></div>
+				<p><?php esc_html_e( 'Pick variant 1 (photo), 2 (dark prestige — default), or 3 (crest centred). Upload a background image here too.', 'excellence-school' ); ?></p>
+			</div>
+			<div class="esb-guide-card">
+				<h3><?php esc_html_e( 'Edit hero text & buttons', 'excellence-school' ); ?></h3>
+				<div class="path">📍 <a href="<?php echo esc_url( $me . 'home' ); ?>"><?php esc_html_e( 'Page Content → Home → Hero 2', 'excellence-school' ); ?></a></div>
+				<ul>
+					<li><?php esc_html_e( 'Main Headline (H1)', 'excellence-school' ); ?></li>
+					<li><?php esc_html_e( 'Subtitle paragraph', 'excellence-school' ); ?></li>
+					<li><?php esc_html_e( 'Primary button label', 'excellence-school' ); ?></li>
+					<li><?php esc_html_e( 'Secondary button label', 'excellence-school' ); ?></li>
+					<li><strong><?php esc_html_e( 'Cycling / animated word', 'excellence-school' ); ?></strong></li>
+				</ul>
+			</div>
+		</div>
+		<div class="note">
+			<strong><?php esc_html_e( 'Cycling word:', 'excellence-school' ); ?></strong>
+			<?php esc_html_e( 'The animated word in the headline (e.g. "Excellence → Distinction → Achievement") is set in the "Cycling Words" field using pipe | to separate words — e.g.', 'excellence-school' ); ?>
+			<code>Excellence|Distinction|Achievement|Heritage</code>.
+			<?php esc_html_e( 'The first word in the list must also appear in your Main Headline text.', 'excellence-school' ); ?>
+		</div>
+
+		<!-- ===== HOMEPAGE SECTIONS ===== -->
+		<h2><?php esc_html_e( '3. Homepage Sections', 'excellence-school' ); ?></h2>
+		<div class="path">📍 <a href="<?php echo esc_url( $me . 'home' ); ?>"><?php esc_html_e( 'Page Content → Home tab', 'excellence-school' ); ?></a></div>
+
+		<table>
+			<tr><th><?php esc_html_e( 'Section', 'excellence-school' ); ?></th><th><?php esc_html_e( 'What you can change', 'excellence-school' ); ?></th></tr>
+			<tr><td><?php esc_html_e( 'Why Choose Us', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Section heading, subtext, and all 6 card titles + descriptions', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Admissions CTA Banner', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Headline and body text of the mid-page call-to-action strip', 'excellence-school' ); ?></td></tr>
+		</table>
+
+		<div class="note" style="margin-top:14px">
+			<strong><?php esc_html_e( 'Show / hide a whole section:', 'excellence-school' ); ?></strong>
+			<?php esc_html_e( 'At the very top of the Home tab is a "Homepage Sections — Show / Hide" panel with an on/off switch for every section (Stats Band, Why Choose Us, Principal\'s Message, Academic Excellence, Achievements, Facilities, Student Life, News & Events, Testimonials, Admissions CTA, Contact). Switch a section off and it disappears from the homepage immediately on save — its text and settings are kept, so switching it back on restores everything exactly as it was.', 'excellence-school' ); ?>
+		</div>
+
+		<div class="path" style="margin-top:12px">📍 <a href="<?php echo esc_url( $cz ); ?>" target="_blank"><?php esc_html_e( 'Customize → Stats & Numbers', 'excellence-school' ); ?></a></div>
+		<p><?php esc_html_e( 'Board pass rate %, total students, and years of service shown in the hero mini-stats and the stats band section.', 'excellence-school' ); ?></p>
+
+		<!-- ===== ABOUT PAGE ===== -->
+		<h2><?php esc_html_e( '4. About Page', 'excellence-school' ); ?></h2>
+		<div class="path">📍 <a href="<?php echo esc_url( $me . 'about' ); ?>"><?php esc_html_e( 'Page Content → About tab', 'excellence-school' ); ?></a></div>
+		<table>
+			<tr><th><?php esc_html_e( 'Section', 'excellence-school' ); ?></th><th><?php esc_html_e( 'What you can change', 'excellence-school' ); ?></th></tr>
+			<tr><td><?php esc_html_e( 'Page hero', 'excellence-school' ); ?></td><td><?php esc_html_e( 'H1 heading and subtitle', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Our Story', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Section heading, lead sentence, body paragraph', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Vision & Mission', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Vision statement and mission statement', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( '4 Core Values', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Label and description for each value', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( "Principal's Message", 'excellence-school' ); ?></td><td><?php esc_html_e( 'Quote and paragraph. Name & role → Customize → School Identity.', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Bottom CTA', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Headline text', 'excellence-school' ); ?></td></tr>
+		</table>
+		<div class="path" style="margin-top:8px">📍 <?php esc_html_e( 'Principal photo → Customize → Principal Photo', 'excellence-school' ); ?></div>
+
+		<!-- ===== ACADEMICS PAGE ===== -->
+		<h2><?php esc_html_e( '5. Academics Page', 'excellence-school' ); ?></h2>
+		<div class="path">📍 <a href="<?php echo esc_url( $me . 'academics' ); ?>"><?php esc_html_e( 'Page Content → Academics tab', 'excellence-school' ); ?></a></div>
+		<table>
+			<tr><th><?php esc_html_e( 'Section', 'excellence-school' ); ?></th><th><?php esc_html_e( 'What you can change', 'excellence-school' ); ?></th></tr>
+			<tr><td><?php esc_html_e( 'Page hero', 'excellence-school' ); ?></td><td><?php esc_html_e( 'H1 and subtitle', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( '3 Stream names', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Science / Commerce / Humanities stream names and 4 subjects each', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Our Approach cards', 'excellence-school' ); ?></td><td><?php esc_html_e( '3 card titles and descriptions', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Results bars', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Description text, and label + % for each of the 4 progress bars', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Facilities cards', 'excellence-school' ); ?></td><td><?php esc_html_e( '3 facility titles and descriptions', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Bottom CTA', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Headline text', 'excellence-school' ); ?></td></tr>
+		</table>
+
+		<!-- ===== ADMISSIONS PAGE ===== -->
+		<h2><?php esc_html_e( '6. Admissions Page', 'excellence-school' ); ?></h2>
+		<div class="path">📍 <a href="<?php echo esc_url( $me . 'admissions' ); ?>"><?php esc_html_e( 'Page Content → Admissions tab', 'excellence-school' ); ?></a></div>
+		<table>
+			<tr><th><?php esc_html_e( 'Section', 'excellence-school' ); ?></th><th><?php esc_html_e( 'What you can change', 'excellence-school' ); ?></th></tr>
+			<tr><td><?php esc_html_e( 'Page hero subtitle', 'excellence-school' ); ?></td><td><?php esc_html_e( 'The subtitle text below the heading', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( '4 How to Apply steps', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Step title and description for each step', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Eligibility table', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Class name and requirement text for each row', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Required documents', 'excellence-school' ); ?></td><td><?php esc_html_e( '6 document names in the checklist', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Important dates', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Month, day, title and description for each of 3 key dates', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'FAQs', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Question and answer for each of 6 FAQ entries', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Bottom CTA', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Headline text', 'excellence-school' ); ?></td></tr>
+		</table>
+
+		<!-- ===== NAVIGATION ===== -->
+		<h2><?php esc_html_e( '7. Navigation Menu', 'excellence-school' ); ?></h2>
+		<div class="path">📍 <a href="<?php echo esc_url( $mn ); ?>" target="_blank"><?php esc_html_e( 'Appearance → Menus', 'excellence-school' ); ?></a></div>
+		<p><?php esc_html_e( 'This is where you add, remove or reorder links in the top navigation bar and the mobile drawer.', 'excellence-school' ); ?></p>
+		<ul>
+			<li><?php esc_html_e( 'Create a menu and assign it to "Primary Menu" for the desktop nav.', 'excellence-school' ); ?></li>
+			<li><?php esc_html_e( 'Assign the same (or a different) menu to "Mobile Drawer Menu" for the hamburger menu on phones.', 'excellence-school' ); ?></li>
+			<li><strong><?php esc_html_e( 'Hindi translation of each link:', 'excellence-school' ); ?></strong> <?php esc_html_e( 'open the nav item in the menu editor → find the "Description" field → type the Hindi text there.', 'excellence-school' ); ?></li>
+			<li><?php esc_html_e( 'To add a new page to the menu: create the page via Pages → Add New, then come here and add it to the menu.', 'excellence-school' ); ?></li>
+		</ul>
+
+		<!-- ===== LOGO & IMAGES ===== -->
+		<h2><?php esc_html_e( '8. Logo & Images', 'excellence-school' ); ?></h2>
+		<div class="path">📍 <a href="<?php echo esc_url( $cz ); ?>" target="_blank"><?php esc_html_e( 'Appearance → Customize', 'excellence-school' ); ?></a></div>
+		<table>
+			<tr><th><?php esc_html_e( 'Image', 'excellence-school' ); ?></th><th><?php esc_html_e( 'Where to upload', 'excellence-school' ); ?></th></tr>
+			<tr><td><?php esc_html_e( 'School crest / logo', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Customize → Site Identity → Logo', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Hero background image', 'excellence-school' ); ?></td><td><?php esc_html_e( 'Customize → Hero → Hero Background Image', 'excellence-school' ); ?></td></tr>
+			<tr><td><?php esc_html_e( 'Principal portrait', 'excellence-school' ); ?></td><td><?php esc_html_e( "Customize → Principal Photo", 'excellence-school' ); ?></td></tr>
+		</table>
+
+		<!-- ===== NEWS & EVENTS ===== -->
+		<h2><?php esc_html_e( '9. News & Events', 'excellence-school' ); ?></h2>
+		<div class="path">📍 <?php esc_html_e( 'wp-admin sidebar → News & Events → Add New', 'excellence-school' ); ?></div>
+		<p><?php esc_html_e( 'Each news item has a title, content, featured image, event date and venue. Published items appear automatically in the News section on the homepage.', 'excellence-school' ); ?></p>
+
+		<!-- ===== PHOTO GALLERY PAGE ===== -->
+		<h2><?php esc_html_e( '10. Photo Gallery Page', 'excellence-school' ); ?></h2>
+		<div class="path">📍 <?php esc_html_e( 'wp-admin sidebar → Pages → Gallery → Edit', 'excellence-school' ); ?></div>
+		<p><?php esc_html_e( 'The photo gallery now lives on its own page (linked from the menu as "Gallery" / "गैलरी") instead of on the homepage. It is a normal WordPress page built with the block editor, using a "Gallery" template.', 'excellence-school' ); ?></p>
+		<ul>
+			<li><?php esc_html_e( 'Open the page and click on the photo grid — it is a single "Gallery" block.', 'excellence-school' ); ?></li>
+			<li><strong><?php esc_html_e( 'Add a photo:', 'excellence-school' ); ?></strong> <?php esc_html_e( 'click the gallery block, then the "+" / "Add" button inside it, and pick or upload an image from the Media Library.', 'excellence-school' ); ?></li>
+			<li><strong><?php esc_html_e( 'Remove a photo:', 'excellence-school' ); ?></strong> <?php esc_html_e( 'select the photo inside the gallery block and use its toolbar/options to remove it.', 'excellence-school' ); ?></li>
+			<li><strong><?php esc_html_e( 'Reorder photos:', 'excellence-school' ); ?></strong> <?php esc_html_e( 'drag a photo to a new position within the gallery block.', 'excellence-school' ); ?></li>
+			<li><strong><?php esc_html_e( 'Captions:', 'excellence-school' ); ?></strong> <?php esc_html_e( 'click below a photo inside the gallery block to add or edit its caption.', 'excellence-school' ); ?></li>
+			<li><strong><?php esc_html_e( 'Intro text:', 'excellence-school' ); ?></strong> <?php esc_html_e( 'the short paragraph above the photos is a normal text block — edit it like any other text.', 'excellence-school' ); ?></li>
+			<li><?php esc_html_e( 'Click "Update" to publish your changes — they appear on the live site immediately.', 'excellence-school' ); ?></li>
+		</ul>
+		<div class="note" style="margin-top:14px">
+			<strong><?php esc_html_e( 'Menu link:', 'excellence-school' ); ?></strong>
+			<?php esc_html_e( 'The "Gallery" link in the header, mobile drawer and footer points to this page. To rename, remove or reposition it, go to', 'excellence-school' ); ?>
+			<a href="<?php echo esc_url( $mn ); ?>" target="_blank"><?php esc_html_e( 'Appearance → Menus', 'excellence-school' ); ?></a>.
+		</div>
+
+		<!-- ===== COLOURS & FONTS ===== -->
+		<h2><?php esc_html_e( '11. Colours & Fonts', 'excellence-school' ); ?></h2>
+		<div class="path">📍 <a href="<?php echo esc_url( $cz ); ?>" target="_blank"><?php esc_html_e( 'Customize → Appearance & Hero', 'excellence-school' ); ?></a></div>
+
+		<div class="esb-guide-row">
+			<div class="esb-guide-card">
+				<h3><?php esc_html_e( 'Colour Palette', 'excellence-school' ); ?></h3>
+				<p><?php esc_html_e( 'Pick from 5 ready-made colour schemes, shown as clickable swatch cards with a live preview of each palette\'s colours:', 'excellence-school' ); ?></p>
+				<ul>
+					<li><?php esc_html_e( 'Forest & Gold (default)', 'excellence-school' ); ?></li>
+					<li><?php esc_html_e( 'Royal Navy & Gold', 'excellence-school' ); ?></li>
+					<li><?php esc_html_e( 'Maroon & Copper', 'excellence-school' ); ?></li>
+					<li><?php esc_html_e( 'Midnight Indigo & Gold', 'excellence-school' ); ?></li>
+					<li><?php esc_html_e( 'Slate & Teal', 'excellence-school' ); ?></li>
+				</ul>
+			</div>
+			<div class="esb-guide-card">
+				<h3><?php esc_html_e( 'Font Pairing', 'excellence-school' ); ?></h3>
+				<p><?php esc_html_e( 'Pick from 5 heading + body font combinations, shown as cards with a live text preview in each font:', 'excellence-school' ); ?></p>
+				<ul>
+					<li><?php esc_html_e( 'Classic Prestige (default)', 'excellence-school' ); ?></li>
+					<li><?php esc_html_e( 'Modern Serif', 'excellence-school' ); ?></li>
+					<li><?php esc_html_e( 'Elegant Scholar', 'excellence-school' ); ?></li>
+					<li><?php esc_html_e( 'Academic', 'excellence-school' ); ?></li>
+					<li><?php esc_html_e( 'Contemporary', 'excellence-school' ); ?></li>
+				</ul>
+			</div>
+		</div>
+		<div class="note" style="margin-top:14px">
+			<?php esc_html_e( 'Click any swatch card or font card and then "Publish" to apply it across the whole site — header, buttons, headings and body text all update together. Use the Customizer\'s live preview (left side) to check how a palette or font pairing looks before publishing.', 'excellence-school' ); ?>
+		</div>
+
+		<div class="note" style="margin-top:24px">
+			<strong><?php esc_html_e( 'Tip:', 'excellence-school' ); ?></strong>
+			<?php esc_html_e( 'Every field on every tab of this Page Content panel has a placeholder showing the default text. If you leave a field blank, the default value is shown on the site.', 'excellence-school' ); ?>
+		</div>
+
 	</div>
 	<?php
 }

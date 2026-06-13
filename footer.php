@@ -71,6 +71,7 @@ $youtube      = esb_opt( 'esb_youtube', 'https://www.youtube.com/watch?v=aMfvYKT
 					<li><a href="<?php echo esc_url( home_url( '/#facilities' ) ); ?>" data-en="Facilities" data-hi="सुविधाएं"><?php esc_html_e( 'Facilities', 'excellence-school' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/#achievements' ) ); ?>" data-en="Achievements" data-hi="उपलब्धियां"><?php esc_html_e( 'Achievements', 'excellence-school' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/#news' ) ); ?>" data-en="News &amp; Events" data-hi="समाचार"><?php esc_html_e( 'News & Events', 'excellence-school' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/circulars/' ) ); ?>" data-en="Circulars &amp; Notices" data-hi="परिपत्र व सूचनाएं"><?php esc_html_e( 'Circulars & Notices', 'excellence-school' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/#contact' ) ); ?>" data-en="Contact" data-hi="संपर्क"><?php esc_html_e( 'Contact', 'excellence-school' ); ?></a></li>
 				</ul>
 			</div>
@@ -94,9 +95,14 @@ $youtube      = esb_opt( 'esb_youtube', 'https://www.youtube.com/watch?v=aMfvYKT
 		<div class="footer-rule"></div>
 
 		<div class="footer-bottom">
-			<span data-en="© <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php echo esc_html( $school_name ); ?>, Subhash Shivaji Nagar, Bhopal. All Rights Reserved."
-			      data-hi="© <?php echo esc_html( gmdate( 'Y' ) ); ?> उत्कृष्टता विद्यालय, सुभाष शिवाजी नगर, भोपाल। सर्वाधिकार सुरक्षित।">© <?php echo esc_html( gmdate( 'Y' ) . ' ' . $school_name ); ?>, Subhash Shivaji Nagar, Bhopal. All Rights Reserved.</span>
-			<span data-en="Department of School Education · Madhya Pradesh" data-hi="स्कूल शिक्षा विभाग · मध्य प्रदेश"><?php esc_html_e( 'Department of School Education · Madhya Pradesh', 'excellence-school' ); ?></span>
+			<span data-en="© <?php echo esc_html( gmdate( 'Y' ) ); ?> Govt. Subhash Excellence Higher Secondary School, Bhopal."
+			      data-hi="© <?php echo esc_html( gmdate( 'Y' ) ); ?> शासकीय सुभाष उत्कृष्ट उच्चतर माध्यमिक विद्यालय, भोपाल।">
+				© <?php echo esc_html( gmdate( 'Y' ) ); ?> Govt. Subhash Excellence Higher Secondary School, Bhopal.
+			</span>
+			<span>
+				Made with <span aria-hidden="true">❤︎</span> by
+				<a href="https://ariham.com/" rel="noopener noreferrer" target="_blank" style="color:var(--gold-300);font-weight:600;">Ariham Technologies</a>
+			</span>
 		</div>
 	</div>
 </footer>

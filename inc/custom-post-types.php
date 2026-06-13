@@ -1,6 +1,6 @@
 <?php
 /**
- * Custom Post Types — News, Achievements, Testimonials, Facilities, Gallery
+ * Custom Post Types — News, Achievements, Testimonials, Facilities, Circulars
  *
  * @package excellence-school
  */
@@ -84,20 +84,40 @@ function esb_register_post_types(): void {
 		]
 	);
 
-	/* ---- Gallery ---- */
+	/* ---- Staff ---- */
 	register_post_type(
-		'esb_gallery',
+		'esb_staff',
 		[
 			'labels'       => [
-				'name'          => esc_html__( 'Gallery Photos', 'excellence-school' ),
-				'singular_name' => esc_html__( 'Gallery Photo', 'excellence-school' ),
-				'add_new_item'  => esc_html__( 'Add Gallery Photo', 'excellence-school' ),
+				'name'          => esc_html__( 'Staff', 'excellence-school' ),
+				'singular_name' => esc_html__( 'Staff Member', 'excellence-school' ),
+				'add_new_item'  => esc_html__( 'Add Staff Member', 'excellence-school' ),
+				'edit_item'     => esc_html__( 'Edit Staff Member', 'excellence-school' ),
 			],
 			'public'       => false,
 			'show_ui'      => true,
 			'show_in_rest' => true,
-			'supports'     => [ 'title', 'thumbnail' ],
-			'menu_icon'    => 'dashicons-format-gallery',
+			'supports'     => [ 'title', 'thumbnail', 'page-attributes' ],
+			'menu_icon'    => 'dashicons-groups',
+		]
+	);
+
+	/* ---- Circulars & Notices ---- */
+	register_post_type(
+		'esb_circular',
+		[
+			'labels'       => [
+				'name'          => esc_html__( 'Circulars & Notices', 'excellence-school' ),
+				'singular_name' => esc_html__( 'Circular', 'excellence-school' ),
+				'add_new_item'  => esc_html__( 'Add Circular', 'excellence-school' ),
+				'edit_item'     => esc_html__( 'Edit Circular', 'excellence-school' ),
+			],
+			'public'       => true,
+			'show_in_rest' => true,
+			'supports'     => [ 'title', 'editor' ],
+			'has_archive'  => 'circulars',
+			'rewrite'      => [ 'slug' => 'circulars' ],
+			'menu_icon'    => 'dashicons-media-document',
 		]
 	);
 
@@ -181,19 +201,28 @@ function esb_add_meta_boxes(): void {
 	);
 
 	add_meta_box(
-		'esb_gallery_meta',
-		esc_html__( 'Gallery Options', 'excellence-school' ),
-		'esb_render_gallery_meta',
-		'esb_gallery',
+		'esb_feature_meta',
+		esc_html__( 'Hindi Translation', 'excellence-school' ),
+		'esb_render_feature_meta',
+		'esb_feature',
 		'normal',
 		'high'
 	);
 
 	add_meta_box(
-		'esb_feature_meta',
-		esc_html__( 'Hindi Translation', 'excellence-school' ),
-		'esb_render_feature_meta',
-		'esb_feature',
+		'esb_staff_meta',
+		esc_html__( 'Staff Details', 'excellence-school' ),
+		'esb_render_staff_meta',
+		'esb_staff',
+		'normal',
+		'high'
+	);
+
+	add_meta_box(
+		'esb_circular_meta',
+		esc_html__( 'Circular Details', 'excellence-school' ),
+		'esb_render_circular_meta',
+		'esb_circular',
 		'normal',
 		'high'
 	);
@@ -242,20 +271,6 @@ function esb_render_facility_meta( WP_Post $post ): void {
 	<?php
 }
 
-function esb_render_gallery_meta( WP_Post $post ): void {
-	wp_nonce_field( 'esb_gallery_meta_save', 'esb_gallery_meta_nonce' );
-	$span = get_post_meta( $post->ID, '_esb_gallery_span', true );
-	?>
-	<p>
-		<label for="esb_gallery_span"><strong><?php esc_html_e( 'Grid Span', 'excellence-school' ); ?></strong></label><br>
-		<select id="esb_gallery_span" name="esb_gallery_span" class="widefat">
-			<option value="normal" <?php selected( $span, 'normal' ); ?>><?php esc_html_e( 'Normal (1×1)', 'excellence-school' ); ?></option>
-			<option value="tall" <?php selected( $span, 'tall' ); ?>><?php esc_html_e( 'Tall (1×2)', 'excellence-school' ); ?></option>
-		</select>
-	</p>
-	<?php
-}
-
 function esb_render_feature_meta( WP_Post $post ): void {
 	wp_nonce_field( 'esb_feature_meta_save', 'esb_feature_meta_nonce' );
 	$title_hi = get_post_meta( $post->ID, '_esb_feature_title_hi', true );
@@ -268,6 +283,54 @@ function esb_render_feature_meta( WP_Post $post ): void {
 	<p>
 		<label for="esb_feature_desc_hi"><strong><?php esc_html_e( 'Hindi Description', 'excellence-school' ); ?></strong></label><br>
 		<textarea id="esb_feature_desc_hi" name="esb_feature_desc_hi" class="widefat" rows="3"><?php echo esc_textarea( $desc_hi ); ?></textarea>
+	</p>
+	<?php
+}
+
+function esb_render_staff_meta( WP_Post $post ): void {
+	wp_nonce_field( 'esb_staff_meta_save', 'esb_staff_meta_nonce' );
+	$name_hi  = get_post_meta( $post->ID, '_esb_staff_name_hi', true );
+	$role     = get_post_meta( $post->ID, '_esb_staff_role', true );
+	$role_hi  = get_post_meta( $post->ID, '_esb_staff_role_hi', true );
+	$qual     = get_post_meta( $post->ID, '_esb_staff_qualification', true );
+	$qual_hi  = get_post_meta( $post->ID, '_esb_staff_qualification_hi', true );
+	?>
+	<p>
+		<label for="esb_staff_name_hi"><strong><?php esc_html_e( 'Name (Hindi)', 'excellence-school' ); ?></strong></label><br>
+		<input type="text" id="esb_staff_name_hi" name="esb_staff_name_hi" value="<?php echo esc_attr( $name_hi ); ?>" class="widefat" />
+	</p>
+	<p>
+		<label for="esb_staff_role"><strong><?php esc_html_e( 'Designation (English)', 'excellence-school' ); ?></strong></label><br>
+		<input type="text" id="esb_staff_role" name="esb_staff_role" value="<?php echo esc_attr( $role ); ?>" class="widefat" placeholder="e.g. LECTURER (MATHEMATICS)" />
+	</p>
+	<p>
+		<label for="esb_staff_role_hi"><strong><?php esc_html_e( 'Designation (Hindi)', 'excellence-school' ); ?></strong></label><br>
+		<input type="text" id="esb_staff_role_hi" name="esb_staff_role_hi" value="<?php echo esc_attr( $role_hi ); ?>" class="widefat" />
+	</p>
+	<p>
+		<label for="esb_staff_qualification"><strong><?php esc_html_e( 'Qualification (English)', 'excellence-school' ); ?></strong></label><br>
+		<input type="text" id="esb_staff_qualification" name="esb_staff_qualification" value="<?php echo esc_attr( $qual ); ?>" class="widefat" placeholder="e.g. M.Sc. B.Ed." />
+	</p>
+	<p>
+		<label for="esb_staff_qualification_hi"><strong><?php esc_html_e( 'Qualification (Hindi)', 'excellence-school' ); ?></strong></label><br>
+		<input type="text" id="esb_staff_qualification_hi" name="esb_staff_qualification_hi" value="<?php echo esc_attr( $qual_hi ); ?>" class="widefat" />
+	</p>
+	<?php
+}
+
+function esb_render_circular_meta( WP_Post $post ): void {
+	wp_nonce_field( 'esb_circular_meta_save', 'esb_circular_meta_nonce' );
+	$ref_no   = get_post_meta( $post->ID, '_esb_circular_no', true );
+	$file_url = get_post_meta( $post->ID, '_esb_circular_file', true );
+	?>
+	<p>
+		<label for="esb_circular_no"><strong><?php esc_html_e( 'Circular / Notice No. (optional)', 'excellence-school' ); ?></strong></label><br>
+		<input type="text" id="esb_circular_no" name="esb_circular_no" value="<?php echo esc_attr( $ref_no ); ?>" class="widefat" placeholder="e.g. SES/2026/014" />
+	</p>
+	<p>
+		<label for="esb_circular_file"><strong><?php esc_html_e( 'Attached PDF / Document URL (optional)', 'excellence-school' ); ?></strong></label><br>
+		<input type="url" id="esb_circular_file" name="esb_circular_file" value="<?php echo esc_attr( $file_url ); ?>" class="widefat" placeholder="https://..." />
+		<span class="description"><?php esc_html_e( 'Upload the file to the Media Library, then paste its URL here. If left blank, the circular links to its own page.', 'excellence-school' ); ?></span>
 	</p>
 	<?php
 }
@@ -304,16 +367,6 @@ function esb_save_meta_boxes( int $post_id ): void {
 		update_post_meta( $post_id, '_esb_fac_tag', sanitize_text_field( wp_unslash( $_POST['esb_fac_tag'] ?? '' ) ) );
 	}
 
-	/* Gallery meta */
-	if ( isset( $_POST['esb_gallery_meta_nonce'] ) &&
-		wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['esb_gallery_meta_nonce'] ) ), 'esb_gallery_meta_save' ) &&
-		current_user_can( 'edit_post', $post_id )
-	) {
-		$allowed_spans = [ 'normal', 'tall' ];
-		$span = sanitize_key( wp_unslash( $_POST['esb_gallery_span'] ?? 'normal' ) );
-		update_post_meta( $post_id, '_esb_gallery_span', in_array( $span, $allowed_spans, true ) ? $span : 'normal' );
-	}
-
 	/* Feature/WCU meta */
 	if ( isset( $_POST['esb_feature_meta_nonce'] ) &&
 		wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['esb_feature_meta_nonce'] ) ), 'esb_feature_meta_save' ) &&
@@ -321,5 +374,26 @@ function esb_save_meta_boxes( int $post_id ): void {
 	) {
 		update_post_meta( $post_id, '_esb_feature_title_hi', sanitize_text_field( wp_unslash( $_POST['esb_feature_title_hi'] ?? '' ) ) );
 		update_post_meta( $post_id, '_esb_feature_desc_hi',  sanitize_textarea_field( wp_unslash( $_POST['esb_feature_desc_hi'] ?? '' ) ) );
+	}
+
+	/* Staff meta */
+	if ( isset( $_POST['esb_staff_meta_nonce'] ) &&
+		wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['esb_staff_meta_nonce'] ) ), 'esb_staff_meta_save' ) &&
+		current_user_can( 'edit_post', $post_id )
+	) {
+		update_post_meta( $post_id, '_esb_staff_name_hi', sanitize_text_field( wp_unslash( $_POST['esb_staff_name_hi'] ?? '' ) ) );
+		update_post_meta( $post_id, '_esb_staff_role', sanitize_text_field( wp_unslash( $_POST['esb_staff_role'] ?? '' ) ) );
+		update_post_meta( $post_id, '_esb_staff_role_hi', sanitize_text_field( wp_unslash( $_POST['esb_staff_role_hi'] ?? '' ) ) );
+		update_post_meta( $post_id, '_esb_staff_qualification', sanitize_text_field( wp_unslash( $_POST['esb_staff_qualification'] ?? '' ) ) );
+		update_post_meta( $post_id, '_esb_staff_qualification_hi', sanitize_text_field( wp_unslash( $_POST['esb_staff_qualification_hi'] ?? '' ) ) );
+	}
+
+	/* Circular meta */
+	if ( isset( $_POST['esb_circular_meta_nonce'] ) &&
+		wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['esb_circular_meta_nonce'] ) ), 'esb_circular_meta_save' ) &&
+		current_user_can( 'edit_post', $post_id )
+	) {
+		update_post_meta( $post_id, '_esb_circular_no', sanitize_text_field( wp_unslash( $_POST['esb_circular_no'] ?? '' ) ) );
+		update_post_meta( $post_id, '_esb_circular_file', esc_url_raw( wp_unslash( $_POST['esb_circular_file'] ?? '' ) ) );
 	}
 }

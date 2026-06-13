@@ -370,15 +370,6 @@ body[data-hero="3"] #hero-3 { display: block; }
 .test-card .rl { font-size: 13.5px; color: var(--muted); }
 
 /* -----------------------------------------------------------------------
-   Gallery
------------------------------------------------------------------------ */
-.gal-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 180px; gap: 12px; }
-.gal-grid .ph { width: 100%; height: 100%; border-radius: var(--r-sm); }
-.gal-grid .gal-item { border-radius: var(--r-sm); overflow: hidden; }
-.gal-grid .gal-item img { width: 100%; height: 100%; object-fit: cover; }
-.gal-grid .tall { grid-row: span 2; }
-
-/* -----------------------------------------------------------------------
    Admissions CTA
 ----------------------------------------------------------------------- */
 .adm-cta { position: relative; background: var(--green-800); color: #fff; overflow: hidden; }
@@ -419,12 +410,11 @@ body[data-hero="3"] #hero-3 { display: block; }
   .principal .grid2, .results-grid, .contact-grid { grid-template-columns: 1fr; }
   .hero3 .stat-strip { grid-template-columns: 1fr 1fr; }
   .life-grid { grid-template-columns: 1fr 1fr; }
-  .gal-grid { grid-template-columns: 1fr 1fr 1fr; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 620px) {
   .stats-grid, .why-grid, .ach-grid, .fac-grid, .news-grid, .test-grid,
-  .stream-cards, .gal-grid { grid-template-columns: 1fr; }
+  .stream-cards { grid-template-columns: 1fr; }
   .life-grid { grid-template-columns: 1fr; grid-auto-rows: 220px; }
   .life-tile.big, .life-tile.wide { grid-column: span 1; grid-row: span 1; }
   .hero1 .accolades { gap: 12px 22px; }

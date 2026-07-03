@@ -55,12 +55,12 @@ if ( str_contains( $_h1, 'Distinction' ) ) {
 				?>
 			</h1>
 			<h1 class="hero-enter" data-delay="2" data-lang-show="hi">
-				प्रतिष्ठित शासकीय उत्कृष्टता विद्यालय।
+				<?php echo esc_html( esb_pg_hi( 'hero1_h1', 'प्रतिष्ठित शासकीय उत्कृष्टता विद्यालय।' ) ); ?>
 			</h1>
 
 			<p class="sub hero-enter" data-delay="3"
 			   data-en="<?php echo esc_attr( $_sub ); ?>"
-			   data-hi="सुभाष शिवाजी नगर में कल के नेताओं का निर्माण — जहाँ शैक्षणिक उत्कृष्टता, चरित्र और अवसर एक छत के नीचे मिलते हैं।">
+			   data-hi="<?php echo esc_attr( esb_pg_hi( 'hero1_sub', 'सुभाष शिवाजी नगर में कल के नेताओं का निर्माण — जहाँ शैक्षणिक उत्कृष्टता, चरित्र और अवसर एक छत के नीचे मिलते हैं।' ) ); ?>">
 				<?php echo esc_html( $_sub ); ?>
 			</p>
 

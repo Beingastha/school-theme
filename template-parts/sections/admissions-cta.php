@@ -16,11 +16,11 @@ $cta_body  = esb_pg( 'home_cta_body', 'Join the School for Excellence, Bhopal an
 			<?php echo esc_html( 'Admissions Open · ' . $year . '–' . ( $year + 1 ) ); ?>
 		</span>
 		<h2 data-en="<?php echo esc_attr( $cta_h2 ); ?>"
-		    data-hi="अपने बच्चे को वह उत्कृष्टता दें जिसके वे हकदार हैं">
+		    data-hi="<?php echo esc_attr( esb_pg_hi( 'home_cta_h2', 'अपने बच्चे को वह उत्कृष्टता दें जिसके वे हकदार हैं' ) ); ?>">
 			<?php echo esc_html( $cta_h2 ); ?>
 		</h2>
 		<p data-en="<?php echo esc_attr( $cta_body ); ?>"
-		   data-hi="उत्कृष्टता विद्यालय, भोपाल से जुड़ें और गुणवत्तापूर्ण शिक्षा, आधुनिक सुविधाओं व हर बच्चे में विश्वास रखने वाले समुदाय के द्वार खोलें। सीमित सीटें उपलब्ध।">
+		   data-hi="<?php echo esc_attr( esb_pg_hi( 'home_cta_body', 'उत्कृष्टता विद्यालय, भोपाल से जुड़ें और गुणवत्तापूर्ण शिक्षा, आधुनिक सुविधाओं व हर बच्चे में विश्वास रखने वाले समुदाय के द्वार खोलें। सीमित सीटें उपलब्ध।' ) ); ?>">
 			<?php echo esc_html( $cta_body ); ?>
 		</p>
 		<div class="cta-row">

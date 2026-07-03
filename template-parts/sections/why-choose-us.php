@@ -70,9 +70,9 @@ if ( $query->have_posts() ) {
 		$desc  = esb_pg( "wcu_card_{$i}_desc",  $defaults['desc_en'] );
 		$cards[] = [
 			'en'      => $title,
-			'hi'      => $defaults['hi'],
+			'hi'      => esb_pg_hi( "wcu_card_{$i}_title", $defaults['hi'] ),
 			'desc_en' => $desc,
-			'desc_hi' => $defaults['desc_hi'],
+			'desc_hi' => esb_pg_hi( "wcu_card_{$i}_desc", $defaults['desc_hi'] ),
 		];
 	}
 }
@@ -87,11 +87,11 @@ $wcu_sub = esb_pg( 'wcu_sub', "As a designated Government School of Excellence, 
 			<span class="eyebrow center" data-en="Why Choose Us" data-hi="हमें क्यों चुनें">
 				<?php esc_html_e( 'Why Choose Us', 'excellence-school' ); ?>
 			</span>
-			<h2 data-en="<?php echo esc_attr( $wcu_h2 ); ?>" data-hi="विश्वास और योग्यता पर आधारित नींव">
+			<h2 data-en="<?php echo esc_attr( $wcu_h2 ); ?>" data-hi="<?php echo esc_attr( esb_pg_hi( 'wcu_h2', 'विश्वास और योग्यता पर आधारित नींव' ) ); ?>">
 				<?php echo esc_html( $wcu_h2 ); ?>
 			</h2>
 			<p data-en="<?php echo esc_attr( $wcu_sub ); ?>"
-			   data-hi="एक नामित शासकीय उत्कृष्टता विद्यालय के रूप में, हम सार्वजनिक शिक्षा की पहुँच को भारत के अग्रणी निजी विद्यालयों के मानकों के साथ जोड़ते हैं।">
+			   data-hi="<?php echo esc_attr( esb_pg_hi( 'wcu_sub', 'एक नामित शासकीय उत्कृष्टता विद्यालय के रूप में, हम सार्वजनिक शिक्षा की पहुँच को भारत के अग्रणी निजी विद्यालयों के मानकों के साथ जोड़ते हैं।' ) ); ?>">
 				<?php echo esc_html( $wcu_sub ); ?>
 			</p>
 		</div>

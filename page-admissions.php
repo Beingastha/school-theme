@@ -31,9 +31,9 @@ foreach ( $step_defaults as $i => [ $en, $hi, $desc_en, $desc_hi ] ) {
 	$steps[] = [
 		(string) $i,
 		esb_pg( "adm_step_{$i}_title", $en ),
-		$hi,
+		esb_pg_hi( "adm_step_{$i}_title", $hi ),
 		esb_pg( "adm_step_{$i}_desc",  $desc_en ),
-		$desc_hi,
+		esb_pg_hi( "adm_step_{$i}_desc", $desc_hi ),
 	];
 }
 
@@ -48,9 +48,9 @@ $elig = [];
 foreach ( $elig_defaults as $i => [ $k_en, $k_hi, $v_en, $v_hi ] ) {
 	$elig[] = [
 		esb_pg( "adm_elig_{$i}_class", $k_en ),
-		$k_hi,
+		esb_pg_hi( "adm_elig_{$i}_class", $k_hi ),
 		esb_pg( "adm_elig_{$i}_req",   $v_en ),
-		$v_hi,
+		esb_pg_hi( "adm_elig_{$i}_req", $v_hi ),
 	];
 }
 
@@ -75,7 +75,7 @@ $docs = [];
 foreach ( $doc_defaults as $i => $en ) {
 	$text = esb_pg( "adm_doc_{$i}", $en );
 	if ( '' !== $text ) {
-		$docs[] = [ $text, $doc_hi[ $i ] ];
+		$docs[] = [ $text, esb_pg_hi( "adm_doc_{$i}", $doc_hi[ $i ] ) ];
 	}
 }
 
@@ -92,7 +92,15 @@ foreach ( $date_defaults as $i => [ $m_en, $m_hi, $def_day, $def_title_en, $titl
 	$title_en = esb_pg( "adm_date_{$i}_title", $def_title_en );
 	$desc_en  = esb_pg( "adm_date_{$i}_desc",  $def_desc_en );
 	if ( '' !== $month || '' !== $title_en ) {
-		$dates[] = [ $month, $m_hi, $day, $title_en, $title_hi, $desc_en, $desc_hi ];
+		$dates[] = [
+			$month,
+			esb_pg_hi( "adm_date_{$i}_month", $m_hi ),
+			$day,
+			$title_en,
+			esb_pg_hi( "adm_date_{$i}_title", $title_hi ),
+			$desc_en,
+			esb_pg_hi( "adm_date_{$i}_desc", $desc_hi ),
+		];
 	}
 }
 
@@ -110,7 +118,7 @@ foreach ( $faq_defaults as $i => [ $q_en, $q_hi, $a_en, $a_hi ] ) {
 	$q = esb_pg( "adm_faq_{$i}_q", $q_en );
 	$a = esb_pg( "adm_faq_{$i}_a", $a_en );
 	if ( '' !== $q && '' !== $a ) {
-		$faqs[] = [ $q, $q_hi, $a, $a_hi ];
+		$faqs[] = [ $q, esb_pg_hi( "adm_faq_{$i}_q", $q_hi ), $a, esb_pg_hi( "adm_faq_{$i}_a", $a_hi ) ];
 	}
 }
 ?>
@@ -134,7 +142,7 @@ foreach ( $faq_defaults as $i => [ $q_en, $q_hi, $a_en, $a_hi ] ) {
 				<?php echo esc_html( 'Admissions ' . $year . '–' . ( $year + 1 ) ); ?>
 			</h1>
 			<p data-en="<?php echo esc_attr( $hero_sub ); ?>"
-			   data-hi="एक ऐसे समुदाय से जुड़ें जहाँ हर बच्चे को चुनौती, सहयोग व उत्कृष्टता की प्रेरणा मिलती है।">
+			   data-hi="<?php echo esc_attr( esb_pg_hi( 'adm_hero_sub', 'एक ऐसे समुदाय से जुड़ें जहाँ हर बच्चे को चुनौती, सहयोग व उत्कृष्टता की प्रेरणा मिलती है।' ) ); ?>">
 				<?php echo esc_html( $hero_sub ); ?>
 			</p>
 			<div class="cta-row" style="display:flex;gap:16px;flex-wrap:wrap;margin-top:30px">
@@ -358,7 +366,7 @@ foreach ( $faq_defaults as $i => [ $q_en, $q_hi, $a_en, $a_hi ] ) {
 		<div class="container reveal" style="text-align:center;padding:clamp(56px,7vw,90px) 28px">
 			<span class="eyebrow center light" data-en="Limited Seats" data-hi="सीमित सीटें"><?php esc_html_e( 'Limited Seats', 'excellence-school' ); ?></span>
 			<h2 style="color:#fff;font-size:clamp(36px,5vw,58px);margin:16px auto 0;max-width:18ch"
-			    data-en="<?php echo esc_attr( $cta_h2 ); ?>" data-hi="आज ही अपने बच्चे की सीट सुरक्षित करें">
+			    data-en="<?php echo esc_attr( $cta_h2 ); ?>" data-hi="<?php echo esc_attr( esb_pg_hi( 'adm_cta_h2', 'आज ही अपने बच्चे की सीट सुरक्षित करें' ) ); ?>">
 				<?php echo esc_html( $cta_h2 ); ?>
 			</h2>
 			<div class="cta-row" style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:32px">

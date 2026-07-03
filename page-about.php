@@ -55,11 +55,11 @@ $val_hi = [
 			<span class="eyebrow light" data-en="Since <?php echo esc_attr( $estd ); ?>" data-hi="<?php echo esc_attr( $estd ); ?> से">
 				<?php echo esc_html( 'Since ' . $estd ); ?>
 			</span>
-			<h1 data-en="<?php echo esc_attr( $hero_h1 ); ?>" data-hi="सार्वजनिक उत्कृष्टता की विरासत">
+			<h1 data-en="<?php echo esc_attr( $hero_h1 ); ?>" data-hi="<?php echo esc_attr( esb_pg_hi( 'about_hero_h1', 'सार्वजनिक उत्कृष्टता की विरासत' ) ); ?>">
 				<?php echo esc_html( $hero_h1 ); ?>
 			</h1>
 			<p data-en="<?php echo esc_attr( $hero_sub ); ?>"
-			   data-hi="स्कूल शिक्षा विभाग, मध्य प्रदेश के अंतर्गत एक प्रमुख शासकीय संस्थान — हर बच्चे के लिए विश्वस्तरीय शिक्षा हेतु प्रतिबद्ध।">
+			   data-hi="<?php echo esc_attr( esb_pg_hi( 'about_hero_sub', 'स्कूल शिक्षा विभाग, मध्य प्रदेश के अंतर्गत एक प्रमुख शासकीय संस्थान — हर बच्चे के लिए विश्वस्तरीय शिक्षा हेतु प्रतिबद्ध।' ) ); ?>">
 				<?php echo esc_html( $hero_sub ); ?>
 			</p>
 		</div>
@@ -71,16 +71,16 @@ $val_hi = [
 			<div class="grid2">
 				<div class="reveal">
 					<span class="eyebrow" data-en="Our Story" data-hi="हमारी कहानी"><?php esc_html_e( 'Our Story', 'excellence-school' ); ?></span>
-					<h2 style="margin-top:16px" data-en="<?php echo esc_attr( $story_h2 ); ?>" data-hi="छह दशकों की प्रतिष्ठा">
+					<h2 style="margin-top:16px" data-en="<?php echo esc_attr( $story_h2 ); ?>" data-hi="<?php echo esc_attr( esb_pg_hi( 'about_story_h2', 'छह दशकों की प्रतिष्ठा' ) ); ?>">
 						<?php echo esc_html( $story_h2 ); ?>
 					</h2>
 					<p class="lead"
 					   data-en="<?php echo esc_attr( $story_lead ); ?>"
-					   data-hi="<?php echo esc_attr( $estd ); ?> में स्थापित, शासकीय उच्चतर माध्यमिक उत्कृष्टता विद्यालय, सुभाष शिवाजी नगर की रचना एक ही दृष्टि से हुई।">
+					   data-hi="<?php echo esc_attr( esb_pg_hi( 'about_story_lead', $estd . ' में स्थापित, शासकीय उच्चतर माध्यमिक उत्कृष्टता विद्यालय, सुभाष शिवाजी नगर की रचना एक ही दृष्टि से हुई।' ) ); ?>">
 						<?php echo esc_html( $story_lead ); ?>
 					</p>
 					<p data-en="<?php echo esc_attr( $story_body ); ?>"
-					   data-hi="माध्यमिक शिक्षा मंडल, म.प्र. से संबद्ध, हम उच्चतर माध्यमिक स्तर पर विज्ञान, वाणिज्य व मानविकी संकाय प्रदान करते हैं।">
+					   data-hi="<?php echo esc_attr( esb_pg_hi( 'about_story_body', 'माध्यमिक शिक्षा मंडल, म.प्र. से संबद्ध, हम उच्चतर माध्यमिक स्तर पर विज्ञान, वाणिज्य व मानविकी संकाय प्रदान करते हैं।' ) ); ?>">
 						<?php echo esc_html( $story_body ); ?>
 					</p>
 				</div>
@@ -103,7 +103,7 @@ $val_hi = [
 					<div class="ic"><span class="diamond"></span></div>
 					<h3 data-en="Our Vision" data-hi="हमारी दृष्टि"><?php esc_html_e( 'Our Vision', 'excellence-school' ); ?></h3>
 					<p data-en="<?php echo esc_attr( $vision_txt ); ?>"
-					   data-hi="समतापूर्ण, विश्वस्तरीय शिक्षा का प्रकाश-स्तंभ बनना।">
+					   data-hi="<?php echo esc_attr( esb_pg_hi( 'about_vision', 'समतापूर्ण, विश्वस्तरीय शिक्षा का प्रकाश-स्तंभ बनना।' ) ); ?>">
 						<?php echo esc_html( $vision_txt ); ?>
 					</p>
 				</div>
@@ -111,7 +111,7 @@ $val_hi = [
 					<div class="ic"><span class="diamond"></span></div>
 					<h3 data-en="Our Mission" data-hi="हमारा ध्येय"><?php esc_html_e( 'Our Mission', 'excellence-school' ); ?></h3>
 					<p data-en="<?php echo esc_attr( $mission_txt ); ?>"
-					   data-hi="कठोर शिक्षा, आधुनिक सुविधाएं व मूल्य-आधारित शिक्षा प्रदान करना।">
+					   data-hi="<?php echo esc_attr( esb_pg_hi( 'about_mission', 'कठोर शिक्षा, आधुनिक सुविधाएं व मूल्य-आधारित शिक्षा प्रदान करना।' ) ); ?>">
 						<?php echo esc_html( $mission_txt ); ?>
 					</p>
 				</div>
@@ -130,7 +130,9 @@ $val_hi = [
 				<?php foreach ( $val_defaults as $i => [ $en_label, $en_desc, $num ] ) :
 					$val_label = esb_pg( "about_val_{$i}_label", $en_label );
 					$val_desc  = esb_pg( "about_val_{$i}_desc",  $en_desc );
-					[ $hi_label, $hi_desc ] = $val_hi[ $i ];
+					[ $hi_label_default, $hi_desc_default ] = $val_hi[ $i ];
+					$hi_label = esb_pg_hi( "about_val_{$i}_label", $hi_label_default );
+					$hi_desc  = esb_pg_hi( "about_val_{$i}_desc",  $hi_desc_default );
 				?>
 				<div class="card value reveal">
 					<div class="num"><?php echo esc_html( $num ); ?></div>
@@ -157,11 +159,11 @@ $val_hi = [
 					<span class="eyebrow" data-en="Principal's Message" data-hi="प्राचार्य का संदेश"><?php esc_html_e( "Principal's Message", 'excellence-school' ); ?></span>
 					<blockquote style="margin-top:18px"
 					            data-en="<?php echo esc_attr( $pm_quote ); ?>"
-					            data-hi="शिक्षा वह सबसे शक्तिशाली साधन है जो हम किसी बच्चे के हाथ में दे सकते हैं।">
+					            data-hi="<?php echo esc_attr( esb_pg_hi( 'about_pm_quote', 'शिक्षा वह सबसे शक्तिशाली साधन है जो हम किसी बच्चे के हाथ में दे सकते हैं।' ) ); ?>">
 						<?php echo esc_html( $pm_quote ); ?>
 					</blockquote>
 					<p data-en="<?php echo esc_attr( $pm_para ); ?>"
-					   data-hi="छह दशकों में यह संस्थान एक ऐसा नाम बन गया है।">
+					   data-hi="<?php echo esc_attr( esb_pg_hi( 'about_pm_para', 'छह दशकों में यह संस्थान एक ऐसा नाम बन गया है।' ) ); ?>">
 						<?php echo esc_html( $pm_para ); ?>
 					</p>
 					<div class="sign">
@@ -202,7 +204,7 @@ $val_hi = [
 		<div class="container reveal" style="text-align:center;padding:clamp(56px,7vw,90px) 28px">
 			<span class="eyebrow center light" data-en="Join Us" data-hi="हमसे जुड़ें"><?php esc_html_e( 'Join Us', 'excellence-school' ); ?></span>
 			<h2 style="color:#fff;font-size:clamp(36px,5vw,58px);margin:16px auto 0;max-width:18ch"
-			    data-en="<?php echo esc_attr( $cta_h2 ); ?>" data-hi="हमारी कहानी का हिस्सा बनें">
+			    data-en="<?php echo esc_attr( $cta_h2 ); ?>" data-hi="<?php echo esc_attr( esb_pg_hi( 'about_cta_h2', 'हमारी कहानी का हिस्सा बनें' ) ); ?>">
 				<?php echo esc_html( $cta_h2 ); ?>
 			</h2>
 			<div class="cta-row" style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:32px">

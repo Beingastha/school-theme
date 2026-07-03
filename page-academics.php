@@ -72,12 +72,12 @@ foreach ( $stream_configs as $slug => $cfg ) {
 	foreach ( $cfg['item_defaults'] as $n => $default_item ) {
 		$idx     = $n + 1;
 		$item_en = esb_pg( "acad_{$slug}_item_{$idx}", $default_item );
-		$item_hi = $cfg['item_hi'][ $n ];
+		$item_hi = esb_pg_hi( "acad_{$slug}_item_{$idx}", $cfg['item_hi'][ $n ] );
 		$items[] = [ $item_en, $item_hi ];
 	}
 	$streams[] = [
 		'en'    => $stream_name,
-		'hi'    => $cfg['hi'],
+		'hi'    => esb_pg_hi( "acad_{$slug}_name", $cfg['hi'] ),
 		'items' => $items,
 	];
 }
@@ -92,9 +92,9 @@ $approaches = [];
 foreach ( $approach_defaults as $i => [ $en, $hi, $desc_en, $desc_hi ] ) {
 	$approaches[] = [
 		esb_pg( "acad_app_{$i}_title", $en ),
-		$hi,
+		esb_pg_hi( "acad_app_{$i}_title", $hi ),
 		esb_pg( "acad_app_{$i}_desc",  $desc_en ),
-		$desc_hi,
+		esb_pg_hi( "acad_app_{$i}_desc", $desc_hi ),
 	];
 }
 
@@ -127,9 +127,9 @@ $levels = [];
 foreach ( $level_defaults as $i => [ $name_en, $name_hi, $desc_en, $desc_hi ] ) {
 	$levels[] = [
 		'name_en' => esb_pg( "acad_level_{$i}_name", $name_en ),
-		'name_hi' => $name_hi,
+		'name_hi' => esb_pg_hi( "acad_level_{$i}_name", $name_hi ),
 		'desc_en' => esb_pg( "acad_level_{$i}_desc", $desc_en ),
-		'desc_hi' => $desc_hi,
+		'desc_hi' => esb_pg_hi( "acad_level_{$i}_desc", $desc_hi ),
 	];
 }
 
@@ -155,9 +155,9 @@ $exams = [];
 foreach ( $exam_defaults as $i => [ $title_en, $title_hi, $desc_en, $desc_hi ] ) {
 	$exams[] = [
 		'title_en' => esb_pg( "acad_exam_{$i}_title", $title_en ),
-		'title_hi' => $title_hi,
+		'title_hi' => esb_pg_hi( "acad_exam_{$i}_title", $title_hi ),
 		'desc_en'  => esb_pg( "acad_exam_{$i}_desc", $desc_en ),
-		'desc_hi'  => $desc_hi,
+		'desc_hi'  => esb_pg_hi( "acad_exam_{$i}_desc", $desc_hi ),
 	];
 }
 
@@ -172,7 +172,7 @@ $bars = [];
 foreach ( $bar_defaults as $i => [ $en, $hi, $def_pct ] ) {
 	$bars[] = [
 		'en'  => esb_pg( "acad_bar_{$i}_label", $en ),
-		'hi'  => $hi,
+		'hi'  => esb_pg_hi( "acad_bar_{$i}_label", $hi ),
 		'pct' => (int) esb_pg( "acad_bar_{$i}_pct", (string) $def_pct ),
 	];
 }
@@ -187,7 +187,7 @@ $acfacs = [];
 foreach ( $acfac_defaults as $i => [ $en, $hi, $desc, $img ] ) {
 	$acfacs[] = [
 		esb_pg( "acad_fac_{$i}_title", $en ),
-		$hi,
+		esb_pg_hi( "acad_fac_{$i}_title", $hi ),
 		esb_pg( "acad_fac_{$i}_desc",  $desc ),
 		$img,
 	];
@@ -203,9 +203,9 @@ foreach ( $acfac_defaults as $i => [ $en, $hi, $desc, $img ] ) {
 				<span data-en="Academics" data-hi="शिक्षा"><?php esc_html_e( 'Academics', 'excellence-school' ); ?></span>
 			</div>
 			<span class="eyebrow light" data-en="Academics" data-hi="शिक्षा"><?php esc_html_e( 'Academics', 'excellence-school' ); ?></span>
-			<h1 data-en="<?php echo esc_attr( $hero_h1 ); ?>" data-hi="असीमित अधिगम"><?php echo esc_html( $hero_h1 ); ?></h1>
+			<h1 data-en="<?php echo esc_attr( $hero_h1 ); ?>" data-hi="<?php echo esc_attr( esb_pg_hi( 'acad_hero_h1', 'असीमित अधिगम' ) ); ?>"><?php echo esc_html( $hero_h1 ); ?></h1>
 			<p data-en="<?php echo esc_attr( $hero_sub ); ?>"
-			   data-hi="विज्ञान, वाणिज्य व मानविकी में कठोर, भविष्य-तैयार पाठ्यक्रम।">
+			   data-hi="<?php echo esc_attr( esb_pg_hi( 'acad_hero_sub', 'विज्ञान, वाणिज्य व मानविकी में कठोर, भविष्य-तैयार पाठ्यक्रम।' ) ); ?>">
 				<?php echo esc_html( $hero_sub ); ?>
 			</p>
 		</div>
@@ -218,7 +218,7 @@ foreach ( $acfac_defaults as $i => [ $en, $hi, $desc, $img ] ) {
 				<span class="eyebrow" data-en="Curriculum" data-hi="पाठ्यक्रम"><?php esc_html_e( 'Curriculum', 'excellence-school' ); ?></span>
 				<h2 data-en="A Continuum From Class I to XII" data-hi="कक्षा I से XII तक की निरंतरता"><?php esc_html_e( 'A Continuum From Class I to XII', 'excellence-school' ); ?></h2>
 				<p data-en="<?php echo esc_attr( $curr_intro ); ?>"
-				   data-hi="हमारा पाठ्यक्रम कक्षा I-XII के लिए मध्य प्रदेश माध्यमिक शिक्षा मंडल (एमपीबीएसई) के पाठ्यक्रम पर आधारित है, जो राष्ट्रीय पाठ्यचर्या रूपरेखा (एनसीएफ), राष्ट्रीय शिक्षा नीति (एनईपी) 2020 व एनसीईआरटी मानकों के अनुरूप है — जो प्राथमिक वर्षों से लेकर बोर्ड परीक्षा की सफलता तक एक मजबूत आधार तैयार करता है।">
+				   data-hi="<?php echo esc_attr( esb_pg_hi( 'acad_curr_intro', 'हमारा पाठ्यक्रम कक्षा I-XII के लिए मध्य प्रदेश माध्यमिक शिक्षा मंडल (एमपीबीएसई) के पाठ्यक्रम पर आधारित है, जो राष्ट्रीय पाठ्यचर्या रूपरेखा (एनसीएफ), राष्ट्रीय शिक्षा नीति (एनईपी) 2020 व एनसीईआरटी मानकों के अनुरूप है — जो प्राथमिक वर्षों से लेकर बोर्ड परीक्षा की सफलता तक एक मजबूत आधार तैयार करता है।' ) ); ?>">
 					<?php echo esc_html( $curr_intro ); ?>
 				</p>
 			</div>
@@ -323,7 +323,7 @@ foreach ( $acfac_defaults as $i => [ $en, $hi, $desc, $img ] ) {
 				</div>
 				<div>
 					<p class="muted" data-en="<?php echo esc_attr( $results_desc ); ?>"
-					   data-hi="हमारे परिणाम अनुशासित तैयारी, व्यक्तिगत ध्यान व उच्च अपेक्षाओं की संस्कृति को दर्शाते हैं।">
+					   data-hi="<?php echo esc_attr( esb_pg_hi( 'acad_results_desc', 'हमारे परिणाम अनुशासित तैयारी, व्यक्तिगत ध्यान व उच्च अपेक्षाओं की संस्कृति को दर्शाते हैं।' ) ); ?>">
 						<?php echo esc_html( $results_desc ); ?>
 					</p>
 					<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:24px">
@@ -387,7 +387,7 @@ foreach ( $acfac_defaults as $i => [ $en, $hi, $desc, $img ] ) {
 		<div class="container reveal" style="text-align:center;padding:clamp(56px,7vw,90px) 28px">
 			<span class="eyebrow center light" data-en="Ready to Begin?" data-hi="शुरू करने को तैयार?"><?php esc_html_e( 'Ready to Begin?', 'excellence-school' ); ?></span>
 			<h2 style="color:#fff;font-size:clamp(36px,5vw,58px);margin:16px auto 0;max-width:18ch"
-			    data-en="<?php echo esc_attr( $cta_h2 ); ?>" data-hi="हमारे साथ अपना भविष्य बनाएं">
+			    data-en="<?php echo esc_attr( $cta_h2 ); ?>" data-hi="<?php echo esc_attr( esb_pg_hi( 'acad_cta_h2', 'हमारे साथ अपना भविष्य बनाएं' ) ); ?>">
 				<?php echo esc_html( $cta_h2 ); ?>
 			</h2>
 			<div class="cta-row" style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:32px">

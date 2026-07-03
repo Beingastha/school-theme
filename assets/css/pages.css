@@ -1,5 +1,34 @@
 /* ===== Inner page styles ===== */
 
+/* --- 404 Not Found --- */
+.err404-hero .err404-num {
+  font-family: var(--ff-display); font-weight: 700; line-height: 1;
+  font-size: clamp(72px, 14vw, 160px); color: var(--gold-400);
+  opacity: .9; margin-top: 8px; letter-spacing: -.02em;
+}
+.err404-search {
+  max-width: 640px; margin: 0 auto 48px; display: flex; gap: 12px; align-items: flex-end;
+}
+.err404-search .field { flex: 1; margin-bottom: 0; }
+.err404-rule { max-width: 640px; margin: 0 auto 40px; }
+.err404-links {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  max-width: 900px; margin: 24px auto 0;
+}
+.err404-link {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: var(--paper); border: 1px solid var(--line); border-radius: var(--r);
+  padding: 18px 22px; font-weight: 600; color: var(--ink);
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.err404-link:hover { border-color: var(--gold-500); transform: translateY(-3px); box-shadow: var(--shadow-sm); }
+.err404-arrow { color: var(--gold-600); transition: transform .2s; }
+.err404-link:hover .err404-arrow { transform: translateX(4px); }
+@media (max-width: 640px) {
+  .err404-links { grid-template-columns: 1fr; }
+  .err404-search { flex-direction: column; align-items: stretch; }
+}
+
 /* --- Gallery page (Gutenberg block content) --- */
 .gallery-page-content { max-width: 1180px; margin: 0 auto; }
 .gallery-page-content .wp-block-gallery { margin-top: 0; }

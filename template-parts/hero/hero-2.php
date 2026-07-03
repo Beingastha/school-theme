@@ -63,24 +63,24 @@ if ( $first_word && str_contains( $h1, $first_word ) ) {
 					?>
 				</h1>
 				<h1 class="hero-enter" data-delay="2" data-lang-show="hi">
-					जहाँ उत्कृष्टता<br>एक आदत बन जाती है।
+					<?php echo esb_pg_hi( 'hero2_h1', 'जहाँ उत्कृष्टता<br>एक आदत बन जाती है।' ); ?>
 				</h1>
 
 				<p class="sub hero-enter" data-delay="3"
 				   data-en="<?php echo esc_attr( $sub ); ?>"
-				   data-hi="भोपाल का एक प्रमुख शासकीय संस्थान — आधुनिक प्रयोगशालाओं, टिंकरिंग लैब और चैम्पियनशिप खेलों के साथ विज्ञान, वाणिज्य और मानविकी।">
+				   data-hi="<?php echo esc_attr( esb_pg_hi( 'hero2_sub', 'भोपाल का एक प्रमुख शासकीय संस्थान — आधुनिक प्रयोगशालाओं, टिंकरिंग लैब और चैम्पियनशिप खेलों के साथ विज्ञान, वाणिज्य और मानविकी।' ) ); ?>">
 					<?php echo esc_html( $sub ); ?>
 				</p>
 
 				<div class="cta-row hero-enter" data-delay="4">
 					<a href="<?php echo esc_url( esb_page_url( 'admissions' ) ); ?>"
 					   class="btn btn-gold btn-arrow"
-					   data-en="<?php echo esc_attr( $cta1 ); ?>" data-hi="प्रवेश हेतु आवेदन">
+					   data-en="<?php echo esc_attr( $cta1 ); ?>" data-hi="<?php echo esc_attr( esb_pg_hi( 'hero2_cta1', 'प्रवेश हेतु आवेदन' ) ); ?>">
 						<?php echo esc_html( $cta1 ); ?>
 					</a>
 					<a href="<?php echo esc_url( esb_page_url( 'academics' ) ); ?>"
 					   class="btn btn-ghost-light"
-					   data-en="<?php echo esc_attr( $cta2 ); ?>" data-hi="शिक्षा देखें">
+					   data-en="<?php echo esc_attr( $cta2 ); ?>" data-hi="<?php echo esc_attr( esb_pg_hi( 'hero2_cta2', 'शिक्षा देखें' ) ); ?>">
 						<?php echo esc_html( $cta2 ); ?>
 					</a>
 				</div>

@@ -36,7 +36,7 @@ $sub        = esb_pg( 'hero3_sub', "Nurturing tomorrow's leaders through quality
 
 			<p class="sub hero-enter" data-delay="4"
 			   data-en="<?php echo esc_attr( $sub ); ?>"
-			   data-hi="गुणवत्तापूर्ण शिक्षा, आधुनिक सुविधाओं और समग्र विकास के माध्यम से कल के नेताओं का निर्माण — समाज के हर वर्ग के लिए।">
+			   data-hi="<?php echo esc_attr( esb_pg_hi( 'hero3_sub', 'गुणवत्तापूर्ण शिक्षा, आधुनिक सुविधाओं और समग्र विकास के माध्यम से कल के नेताओं का निर्माण — समाज के हर वर्ग के लिए।' ) ); ?>">
 				<?php echo esc_html( $sub ); ?>
 			</p>
 

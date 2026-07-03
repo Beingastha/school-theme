@@ -194,6 +194,11 @@ require_once ESB_DIR . '/inc/customizer.php';
 require_once ESB_DIR . '/inc/page-content.php';
 
 /* =========================================================================
+   Hindi Translation meta box (generic pages)
+   ========================================================================= */
+require_once ESB_DIR . '/inc/page-translations.php';
+
+/* =========================================================================
    Template Tags / Helpers
    ========================================================================= */
 

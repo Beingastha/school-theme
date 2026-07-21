@@ -275,6 +275,16 @@ a.pill.gold:hover { background: rgba(201,162,58,.22); border-color: rgba(201,162
 .footer-widget .tribe-events-calendar-list__event-datetime { color: rgba(255,255,255,.74); }
 .footer-widget .tribe-common-c-svgicon { fill: rgba(255,255,255,.5); stroke: rgba(255,255,255,.5); }
 .footer-widget .tribe-events-widget-events-list__event { border-color: rgba(255,255,255,.12); }
+/* Events List widget (footer) — explicit contrast on dark bg */
+.footer-widget .tribe-events-widget-events-list__event-title,
+.footer-widget .tribe-events-widget-events-list__event-title a,
+.footer-widget .tribe-events-widget-events-list__event-date-tag-daynum { color: #fff; }
+.footer-widget .tribe-events-widget-events-list__event-title a:hover { color: var(--gold-300); }
+.footer-widget .tribe-events-widget-events-list__event-date-tag-month,
+.footer-widget .tribe-events-widget-events-list__event-datetime,
+.footer-widget .tribe-events-widget-events-list__event-datetime-wrapper { color: var(--gold-300); }
+.footer-widget .tribe-events-widget-events-list__event-row { border-color: rgba(255,255,255,.12); }
+.footer-widget .tribe-events-widget-events-list__view-more-link { color: var(--gold-300); font-weight: 600; }
 .footer-rule { height: 1px; background: rgba(255,255,255,.12); margin: 44px 0 28px; }
 .social {
   width: 40px;

@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ESB_VERSION', '2.4.17' );
+define( 'ESB_VERSION', '2.4.18' );
 define( 'ESB_DIR', get_template_directory() );
 define( 'ESB_URI', get_template_directory_uri() );
 

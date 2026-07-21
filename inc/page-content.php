@@ -808,17 +808,6 @@ function esb_pg_tab_academics(): void {
 
 function esb_pg_tab_admissions(): void {
 	?>
-	<div class="notice notice-warning inline" style="margin:0 0 20px">
-		<p>
-			<?php
-			printf(
-				/* translators: %s: link to the Admissions page in the block editor */
-				esc_html__( 'The Admissions page now uses the Gutenberg block editor instead of these fields — edit its content directly at %s. The fields below are kept for reference but no longer affect the live page.', 'excellence-school' ),
-				'<a href="' . esc_url( admin_url( 'edit.php?post_type=page' ) ) . '">' . esc_html__( 'Pages → Admissions', 'excellence-school' ) . '</a>'
-			);
-			?>
-		</p>
-	</div>
 	<!-- ---- Admissions Hero ---- -->
 	<div class="esb-pg-group">
 		<div class="esb-pg-group-title"><?php esc_html_e( 'Page Hero', 'excellence-school' ); ?></div>
@@ -958,6 +947,24 @@ function esb_pg_tab_admissions(): void {
 			</div>
 		</div>
 		<?php endforeach; ?>
+	</div>
+
+	<!-- ---- Enquiry Form Section ---- -->
+	<div class="esb-pg-group">
+		<div class="esb-pg-group-title"><?php esc_html_e( 'Enquiry Form Section', 'excellence-school' ); ?></div>
+		<p class="description" style="margin-bottom:10px"><?php esc_html_e( 'Shown above the provisional admission form.', 'excellence-school' ); ?></p>
+		<div class="esb-pg-row full">
+			<?php esb_pg_textarea( 'adm_apply_intro', 'Intro Text', 'Fill out the provisional admission form below and our admissions team will be in touch.', '', 'नीचे प्रावधिक प्रवेश फॉर्म भरें, हमारी प्रवेश टीम आपसे संपर्क करेगी।' ); ?>
+		</div>
+		<div class="esb-pg-group-title" style="margin-top:20px"><?php esc_html_e( 'Admissions Office Box', 'excellence-school' ); ?></div>
+		<div class="esb-pg-row">
+			<?php esb_pg_text( 'adm_office_address', 'Address', 'Govt. Subhash Excellence Higher Secondary School, Bhopal' ); ?>
+			<?php esb_pg_text( 'adm_office_phone', 'Phone (as displayed)', '+0755-2552490' ); ?>
+		</div>
+		<div class="esb-pg-row" style="margin-top:10px">
+			<?php esb_pg_text( 'adm_office_email', 'Email', 'govt.hss.excellence.subhash@gmail.com' ); ?>
+			<?php esb_pg_text( 'adm_office_hours', 'Office Hours', 'Mon – Sat · 8:00 AM – 4:00 PM', '', 'सोम – शनि · प्रातः 8 – सायं 4' ); ?>
+		</div>
 	</div>
 
 	<!-- ---- Admissions Bottom CTA ---- -->

@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ESB_VERSION', '2.4.18' );
+define( 'ESB_VERSION', '2.4.19' );
 define( 'ESB_DIR', get_template_directory() );
 define( 'ESB_URI', get_template_directory_uri() );
 
@@ -81,6 +81,7 @@ add_action( 'widgets_init', 'esb_register_footer_widgets' );
 function esb_register_footer_widgets(): void {
 	register_widget( 'ESB_Footer_Brand_Widget' );
 	register_widget( 'ESB_Footer_Contact_Widget' );
+	register_widget( 'ESB_Events_Calendar_Widget' );
 }
 
 /**
@@ -185,6 +186,135 @@ class ESB_Footer_Contact_Widget extends WP_Widget {
 	public function form( $instance ): void {
 		echo '<p>' . esc_html__( 'No settings here — content is pulled live from Appearance → Customize → School Settings.', 'excellence-school' ) . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
+}
+
+/**
+ * Compact month-grid calendar of upcoming events for the footer.
+ *
+ * Renders a mini month grid (Mon-first) from The Events Calendar's events.
+ * Days that have events are highlighted and link to that day's event list.
+ * Prev/Next navigate months in place via the `esb_cal` query var (no JS),
+ * jumping back to the calendar via the #esb-events-cal anchor. A
+ * "View full calendar" link points to the main /events/ page.
+ */
+class ESB_Events_Calendar_Widget extends WP_Widget {
+	public function __construct() {
+		parent::__construct(
+			'esb_events_calendar',
+			esc_html__( 'ESB: Events Mini Calendar', 'excellence-school' ),
+			[ 'description' => esc_html__( 'Month-grid calendar of upcoming events (from The Events Calendar), with prev/next month navigation.', 'excellence-school' ) ]
+		);
+	}
+
+	public function widget( $args, $instance ): void {
+		$title = ! empty( $instance['title'] ) ? $instance['title'] : '';
+
+		echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		if ( $title ) {
+			echo $args['before_title'] . esc_html( $title ) . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+
+		if ( ! function_exists( 'tribe_get_events' ) ) {
+			echo '<p>' . esc_html__( 'Events calendar is unavailable.', 'excellence-school' ) . '</p>';
+			echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			return;
+		}
+
+		// Target month: ?esb_cal=YYYY-MM, else current month. Clamp to a real date.
+		$req   = isset( $_GET['esb_cal'] ) ? sanitize_text_field( wp_unslash( $_GET['esb_cal'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$month = preg_match( '/^\d{4}-\d{2}$/', $req ) ? $req : current_time( 'Y-m' );
+		$first = DateTime::createFromFormat( 'Y-m-d', $month . '-01' );
+		if ( ! $first ) {
+			$first = new DateTime( current_time( 'Y-m' ) . '-01' );
+		}
+		$first->setTime( 0, 0, 0 );
+
+		$year        = (int) $first->format( 'Y' );
+		$month_num   = (int) $first->format( 'm' );
+		$days_in_mon = (int) $first->format( 't' );
+		$lead_blanks = ( (int) $first->format( 'N' ) ) - 1; // Mon-first: Mon=0 … Sun=6.
+		$month_start = $first->format( 'Y-m-d 00:00:00' );
+		$month_end   = $first->format( 'Y-m-t 23:59:59' );
+
+		// Bucket events by day-of-month (by start date).
+		$events   = tribe_get_events( [
+			'start_date'     => $month_start,
+			'end_date'       => $month_end,
+			'posts_per_page' => -1,
+		] );
+		$by_day = [];
+		foreach ( $events as $ev ) {
+			$d = (int) tribe_get_start_date( $ev, false, 'j' );
+			$by_day[ $d ] = ( $by_day[ $d ] ?? 0 ) + 1;
+		}
+
+		$prev = ( clone $first )->modify( '-1 month' )->format( 'Y-m' );
+		$next = ( clone $first )->modify( '+1 month' )->format( 'Y-m' );
+		$base = home_url( '/' );
+		$nav  = static function ( $ym ) use ( $base ) {
+			return esc_url( add_query_arg( 'esb_cal', $ym, $base ) . '#esb-events-cal' );
+		};
+		$weekdays = [ 'M', 'T', 'W', 'T', 'F', 'S', 'S' ];
+		?>
+		<div class="esb-cal" id="esb-events-cal">
+			<div class="esb-cal-head">
+				<a class="esb-cal-nav" href="<?php echo $nav( $prev ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" aria-label="<?php esc_attr_e( 'Previous month', 'excellence-school' ); ?>">&lsaquo;</a>
+				<span class="esb-cal-title"><?php echo esc_html( $first->format( 'F Y' ) ); ?></span>
+				<a class="esb-cal-nav" href="<?php echo $nav( $next ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" aria-label="<?php esc_attr_e( 'Next month', 'excellence-school' ); ?>">&rsaquo;</a>
+			</div>
+			<div class="esb-cal-grid">
+				<?php foreach ( $weekdays as $wd ) : ?>
+					<span class="esb-cal-wd"><?php echo esc_html( $wd ); ?></span>
+				<?php endforeach; ?>
+				<?php for ( $b = 0; $b < $lead_blanks; $b++ ) : ?>
+					<span class="esb-cal-day esb-cal-empty"></span>
+				<?php endfor; ?>
+				<?php for ( $d = 1; $d <= $days_in_mon; $d++ ) : ?>
+					<?php if ( ! empty( $by_day[ $d ] ) ) : ?>
+						<?php $day_link = tribe_get_day_link( sprintf( '%04d-%02d-%02d', $year, $month_num, $d ) ); ?>
+						<a class="esb-cal-day esb-cal-has" href="<?php echo esc_url( $day_link ); ?>"
+						   title="<?php echo esc_attr( sprintf( _n( '%d event', '%d events', $by_day[ $d ], 'excellence-school' ), $by_day[ $d ] ) ); ?>">
+							<?php echo esc_html( $d ); ?>
+						</a>
+					<?php else : ?>
+						<span class="esb-cal-day"><?php echo esc_html( $d ); ?></span>
+					<?php endif; ?>
+				<?php endfor; ?>
+			</div>
+			<a class="esb-cal-more" href="<?php echo esc_url( home_url( '/events/' ) ); ?>">
+				<?php esc_html_e( 'View full calendar', 'excellence-school' ); ?> &rarr;
+			</a>
+		</div>
+		<?php
+		echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	public function form( $instance ): void {
+		$title = $instance['title'] ?? '';
+		?>
+		<p>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_html_e( 'Title:', 'excellence-school' ); ?></label>
+			<input class="widefat" type="text"
+			       id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
+			       name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>"
+			       value="<?php echo esc_attr( $title ); ?>" />
+		</p>
+		<?php
+	}
+
+	public function update( $new_instance, $old_instance ): array {
+		return [ 'title' => sanitize_text_field( $new_instance['title'] ?? '' ) ];
+	}
+}
+
+/**
+ * Register the `esb_cal` query var so the footer mini-calendar's prev/next
+ * month links don't 404 or get stripped.
+ */
+add_filter( 'query_vars', 'esb_register_cal_query_var' );
+function esb_register_cal_query_var( array $vars ): array {
+	$vars[] = 'esb_cal';
+	return $vars;
 }
 
 /* =========================================================================

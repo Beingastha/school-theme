@@ -272,7 +272,7 @@
 .date-card h3 { font-size: 21px; }
 .date-card p { color: var(--muted); font-size: 14px; margin-top: 4px; }
 
-.apply-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px,5vw,64px); align-items: start; }
+.apply-form-wrap .help-box { text-align: left; }
 .form-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(28px,4vw,44px); box-shadow: var(--shadow-md); }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .field { margin-bottom: 18px; }
@@ -283,13 +283,49 @@
 }
 .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(17,96,60,.12); }
 .form-note { font-size: 13px; color: var(--muted); margin-top: 4px; }
-.apply-aside .ph { height: 260px; border-radius: var(--r-lg); margin-bottom: 24px; }
-.apply-aside h3 { font-size: 27px; }
-.apply-aside p { color: var(--muted); margin-top: 12px; }
 .help-box { background: var(--green-900); color: #fff; border-radius: var(--r); padding: 26px 28px; margin-top: 24px; }
 .help-box h4 { color: #fff; font-family: var(--ff-display); font-size: 24px; font-weight: 600; }
 .help-box p { color: rgba(255,255,255,.8); margin-top: 8px; font-size: 14.5px; }
 .help-box a { color: var(--gold-300); font-weight: 600; }
+
+/* --- Forminator form (Admissions provisional form) --- */
+.form-card .forminator-row { display: flex; flex-wrap: wrap; gap: 0 16px; margin: 0 0 4px; }
+.form-card .forminator-col { flex: 1 1 0; min-width: 200px; padding: 0; margin-bottom: 18px; }
+.form-card .forminator-field { margin: 0; }
+.form-card .forminator-label {
+  display: block; font-family: var(--ff-body); font-size: 13px; font-weight: 600;
+  letter-spacing: .04em; color: var(--green-800); margin-bottom: 7px; text-transform: none;
+}
+.form-card .forminator-required { color: var(--gold-700); }
+.form-card .forminator-input,
+.form-card select.forminator-input,
+.form-card .forminator-textarea-container textarea,
+.form-card .forminator-select2 .select2-selection {
+  width: 100%; font-family: var(--ff-body); font-size: 15px; color: var(--ink);
+  padding: 13px 15px; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--cream); box-shadow: none; height: auto; transition: border-color .2s, box-shadow .2s;
+}
+.form-card .forminator-input:focus,
+.form-card select.forminator-input:focus,
+.form-card .forminator-textarea-container textarea:focus {
+  outline: none; border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(17,96,60,.12);
+}
+.form-card .forminator-radio-label,
+.form-card .forminator-checkbox__label { font-family: var(--ff-body); font-size: 14.5px; color: var(--ink); }
+.form-card .forminator-button,
+.form-card .forminator-pagination-submit {
+  font-family: var(--ff-body); font-weight: 700; letter-spacing: .02em;
+  background: var(--gold-500); color: var(--green-900); border: none; border-radius: 999px;
+  padding: 14px 32px; box-shadow: none; transition: background-color .2s, transform .2s;
+}
+.form-card .forminator-button:hover,
+.form-card .forminator-pagination-submit:hover { background: var(--gold-600); transform: translateY(-2px); }
+.form-card .forminator-pagination-steps { display: flex; justify-content: center; gap: 8px; margin-bottom: 28px; }
+.form-card .forminator-pagination-steps li,
+.form-card .forminator-pagination-steps .forminator-pagination-item { color: var(--muted); }
+.form-card .forminator-pagination-steps .forminator-current,
+.form-card .forminator-pagination-steps [aria-current="step"] { color: var(--green-700); font-weight: 700; }
+.form-card .forminator-response-message.forminator-success { color: var(--green-700); font-weight: 600; }
 
 /* --- Circulars / Notices --- */
 .circular-list { display: grid; gap: 14px; }
@@ -345,9 +381,8 @@
   .results-grid { grid-template-columns: 1fr; }
   .steps-grid { grid-template-columns: 1fr 1fr; }
   .dates-grid  { grid-template-columns: 1fr 1fr; }
-  .elig-grid, .apply-grid { grid-template-columns: 1fr; }
-  .apply-aside { order: -1; } /* Show help info above form on mobile */
-  .apply-aside .ph { display: none; } /* Hide placeholder image on mobile */
+  .elig-grid { grid-template-columns: 1fr; }
+  .form-card .forminator-col { flex: 1 1 100%; }
   .faq summary { font-size: 18px; padding: 18px 20px; }
   .faq .faq-body { padding: 0 20px 18px; }
 }

@@ -808,6 +808,17 @@ function esb_pg_tab_academics(): void {
 
 function esb_pg_tab_admissions(): void {
 	?>
+	<div class="notice notice-warning inline" style="margin:0 0 20px">
+		<p>
+			<?php
+			printf(
+				/* translators: %s: link to the Admissions page in the block editor */
+				esc_html__( 'The Admissions page now uses the Gutenberg block editor instead of these fields — edit its content directly at %s. The fields below are kept for reference but no longer affect the live page.', 'excellence-school' ),
+				'<a href="' . esc_url( admin_url( 'edit.php?post_type=page' ) ) . '">' . esc_html__( 'Pages → Admissions', 'excellence-school' ) . '</a>'
+			);
+			?>
+		</p>
+	</div>
 	<!-- ---- Admissions Hero ---- -->
 	<div class="esb-pg-group">
 		<div class="esb-pg-group-title"><?php esc_html_e( 'Page Hero', 'excellence-school' ); ?></div>

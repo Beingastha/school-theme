@@ -268,9 +268,16 @@ body[data-hero="3"] #hero-3 { display: block; }
 .result-bar .top .pct { font-family: var(--ff-display); font-size: 26px; font-weight: 600; color: var(--green-700); }
 .result-bar .track { height: 10px; border-radius: 999px; background: rgba(17,96,60,.1); overflow: hidden; }
 .result-bar .fill {
+  display: block;
   height: 100%; border-radius: 999px;
   background: linear-gradient(90deg, var(--gold-500), var(--green-600));
-  width: var(--w); transition: width 1.4s cubic-bezier(.22,1,.36,1);
+  width: 0; transition: width 1.4s cubic-bezier(.22,1,.36,1);
+}
+/* Fill animates up to its target width when the section scrolls into view. */
+.reveal.in .result-bar .fill { width: var(--w); }
+/* If JS/reveal never fires (or reduced motion), still show bars at full width. */
+@media (prefers-reduced-motion: reduce) {
+  .result-bar .fill { width: var(--w); transition: none; }
 }
 .stream-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 30px; }
 .stream-card {
@@ -285,6 +292,7 @@ body[data-hero="3"] #hero-3 { display: block; }
    Achievements
 ----------------------------------------------------------------------- */
 .ach-grid { grid-template-columns: repeat(3, 1fr); }
+.ach-card { display: block; color: inherit; text-decoration: none; }
 .ach-card .ph { height: 220px; }
 .ach-card .card-thumb { height: 220px; overflow: hidden; }
 .ach-card .card-thumb img { width: 100%; height: 100%; object-fit: cover; }

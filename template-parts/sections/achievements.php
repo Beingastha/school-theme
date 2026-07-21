@@ -58,7 +58,7 @@ $static = [
 				<?php
 				$badge = get_post_meta( get_the_ID(), '_esb_badge_label', true );
 				?>
-				<div class="card ach-card reveal">
+				<a class="card ach-card reveal" href="<?php the_permalink(); ?>">
 					<?php esb_thumb( get_the_ID(), 'medium_large', get_the_title() ); ?>
 					<div class="body">
 						<?php if ( $badge ) : ?>
@@ -67,7 +67,7 @@ $static = [
 						<h3><?php the_title(); ?></h3>
 						<p><?php the_excerpt(); ?></p>
 					</div>
-				</div>
+				</a>
 				<?php endwhile; wp_reset_postdata(); ?>
 			<?php else : ?>
 				<?php foreach ( $static as $item ) : ?>

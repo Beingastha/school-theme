@@ -92,6 +92,12 @@ $youtube      = esb_opt( 'esb_youtube', 'https://www.youtube.com/watch?v=aMfvYKT
 			</div>
 		</div>
 
+		<?php if ( is_active_sidebar( 'footer-widgets' ) ) : ?>
+		<div class="footer-widgets">
+			<?php dynamic_sidebar( 'footer-widgets' ); ?>
+		</div>
+		<?php endif; ?>
+
 		<div class="footer-rule"></div>
 
 		<div class="footer-bottom">

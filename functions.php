@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ESB_VERSION', '2.4.12' );
+define( 'ESB_VERSION', '2.4.13' );
 define( 'ESB_DIR', get_template_directory() );
 define( 'ESB_URI', get_template_directory_uri() );
 
@@ -28,6 +28,22 @@ function esb_setup(): void {
 		'primary' => esc_html__( 'Primary Menu', 'excellence-school' ),
 		'drawer'  => esc_html__( 'Mobile Drawer Menu', 'excellence-school' ),
 		'footer'  => esc_html__( 'Footer Quick Links', 'excellence-school' ),
+	] );
+}
+
+/* =========================================================================
+   Widget Areas
+   ========================================================================= */
+add_action( 'widgets_init', 'esb_register_sidebars' );
+function esb_register_sidebars(): void {
+	register_sidebar( [
+		'name'          => esc_html__( 'Footer Widgets', 'excellence-school' ),
+		'id'            => 'footer-widgets',
+		'description'   => esc_html__( 'Shown as a full-width row in the site footer, above the copyright line. Add a Calendar, Text, or any plugin widget (e.g. an events calendar) here — Appearance → Widgets.', 'excellence-school' ),
+		'before_widget' => '<div class="footer-widget %2$s">',
+		'after_widget'  => '</div>',
+		'before_title'  => '<h4>',
+		'after_title'   => '</h4>',
 	] );
 }
 
@@ -278,40 +294,6 @@ function esb_thumb( int $post_id, string $size = 'large', string $label = '', st
 		$ph_class = 'ph' . ( $dark ? ' dark' : '' ) . ( $class ? ' ' . $class : '' );
 		echo '<div class="' . esc_attr( $ph_class ) . '" data-label="' . esc_attr( $label ) . '"></div>';
 	}
-}
-
-/**
- * Admissions enquiry form nonce verification and email handler.
- */
-add_action( 'init', 'esb_handle_enquiry_form' );
-function esb_handle_enquiry_form(): void {
-	if ( ! isset( $_POST['esb_enquiry_nonce'] ) ) {
-		return;
-	}
-
-	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['esb_enquiry_nonce'] ) ), 'esb_enquiry_submit' ) ) {
-		wp_die( esc_html__( 'Security check failed. Please go back and try again.', 'excellence-school' ) );
-	}
-
-	$name    = sanitize_text_field( wp_unslash( $_POST['enquiry_name'] ?? '' ) );
-	$student = sanitize_text_field( wp_unslash( $_POST['enquiry_student'] ?? '' ) );
-	$class   = sanitize_text_field( wp_unslash( $_POST['enquiry_class'] ?? '' ) );
-	$stream  = sanitize_text_field( wp_unslash( $_POST['enquiry_stream'] ?? '' ) );
-	$phone   = sanitize_text_field( wp_unslash( $_POST['enquiry_phone'] ?? '' ) );
-	$email   = sanitize_email( wp_unslash( $_POST['enquiry_email'] ?? '' ) );
-	$message = sanitize_textarea_field( wp_unslash( $_POST['enquiry_message'] ?? '' ) );
-
-	$to      = esb_opt( 'esb_email', 'govt.hss.excellence.subhash@gmail.com' );
-	$subject = sprintf( 'Admission Enquiry from %s', $name );
-	$body    = sprintf(
-		"Name: %s\nStudent Name: %s\nApplying for Class: %s\nStream: %s\nPhone: %s\nEmail: %s\n\nMessage:\n%s",
-		$name, $student, $class, $stream, $phone, $email, $message
-	);
-
-	wp_mail( $to, $subject, $body );
-
-	wp_safe_redirect( add_query_arg( 'enquiry', 'sent', wp_get_referer() ) );
-	exit;
 }
 
 /**

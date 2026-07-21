@@ -13,8 +13,6 @@ $year    = (int) gmdate( 'Y' );
 $desk_id  = (int) get_theme_mod( 'esb_admissions_desk_image', 0 );
 $desk_url = $desk_id ? wp_get_attachment_image_url( $desk_id, 'large' ) : '';
 
-$sent = isset( $_GET['enquiry'] ) && 'sent' === sanitize_key( wp_unslash( $_GET['enquiry'] ?? '' ) );
-
 /* Page content */
 $hero_sub = esb_pg( 'adm_hero_sub', 'Join a community where every child is challenged, supported and inspired to excel. Applications for Classes IX to XII are now open.' );
 $cta_h2   = esb_pg( 'adm_cta_h2',  "Secure Your Child's Seat Today" );
@@ -250,66 +248,9 @@ foreach ( $faq_defaults as $i => [ $q_en, $q_hi, $a_en, $a_hi ] ) {
 					<span class="eyebrow" data-en="Admission Enquiry" data-hi="प्रवेश पूछताछ"><?php esc_html_e( 'Admission Enquiry', 'excellence-school' ); ?></span>
 					<h2 style="font-size:clamp(32px,4.5vw,50px);margin-top:14px" data-en="Begin Your Application" data-hi="अपना आवेदन शुरू करें"><?php esc_html_e( 'Begin Your Application', 'excellence-school' ); ?></h2>
 
-					<?php if ( $sent ) : ?>
-					<div class="form-card" style="margin-top:24px;color:var(--green-700);font-weight:600;text-align:center;padding:40px">
-						<?php esc_html_e( '✓ Thank you! Our admissions team will contact you shortly.', 'excellence-school' ); ?>
+					<div class="form-card" style="margin-top:24px">
+						<?php echo do_shortcode( '[forminator_form id="5820"]' ); ?>
 					</div>
-					<?php else : ?>
-					<form class="form-card" style="margin-top:24px" method="post" action="">
-						<?php wp_nonce_field( 'esb_enquiry_submit', 'esb_enquiry_nonce' ); ?>
-						<div class="form-row">
-							<div class="field">
-								<label for="enquiry_student" data-en="Student's Name" data-hi="विद्यार्थी का नाम"><?php esc_html_e( "Student's Name", 'excellence-school' ); ?></label>
-								<input type="text" id="enquiry_student" name="enquiry_student" placeholder="Full name" required />
-							</div>
-							<div class="field">
-								<label for="enquiry_name" data-en="Parent's Name" data-hi="अभिभावक का नाम"><?php esc_html_e( "Parent's Name", 'excellence-school' ); ?></label>
-								<input type="text" id="enquiry_name" name="enquiry_name" placeholder="Full name" required />
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="field">
-								<label for="enquiry_phone" data-en="Phone" data-hi="फोन"><?php esc_html_e( 'Phone', 'excellence-school' ); ?></label>
-								<input type="tel" id="enquiry_phone" name="enquiry_phone" placeholder="+91" required />
-							</div>
-							<div class="field">
-								<label for="enquiry_email" data-en="Email" data-hi="ईमेल"><?php esc_html_e( 'Email', 'excellence-school' ); ?></label>
-								<input type="email" id="enquiry_email" name="enquiry_email" placeholder="you@email.com" />
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="field">
-								<label for="enquiry_class" data-en="Class Applying For" data-hi="आवेदित कक्षा"><?php esc_html_e( 'Class Applying For', 'excellence-school' ); ?></label>
-								<select id="enquiry_class" name="enquiry_class">
-									<option><?php esc_html_e( 'Class IX', 'excellence-school' ); ?></option>
-									<option><?php esc_html_e( 'Class X', 'excellence-school' ); ?></option>
-									<option><?php esc_html_e( 'Class XI', 'excellence-school' ); ?></option>
-									<option><?php esc_html_e( 'Class XII', 'excellence-school' ); ?></option>
-								</select>
-							</div>
-							<div class="field">
-								<label for="enquiry_stream" data-en="Stream (XI–XII)" data-hi="संकाय (11–12)"><?php esc_html_e( 'Stream (XI–XII)', 'excellence-school' ); ?></label>
-								<select id="enquiry_stream" name="enquiry_stream">
-									<option><?php esc_html_e( 'Science', 'excellence-school' ); ?></option>
-									<option><?php esc_html_e( 'Commerce', 'excellence-school' ); ?></option>
-									<option><?php esc_html_e( 'Humanities', 'excellence-school' ); ?></option>
-									<option><?php esc_html_e( 'Not applicable', 'excellence-school' ); ?></option>
-								</select>
-							</div>
-						</div>
-						<div class="field">
-							<label for="enquiry_message" data-en="Message (optional)" data-hi="संदेश (वैकल्पिक)"><?php esc_html_e( 'Message (optional)', 'excellence-school' ); ?></label>
-							<textarea id="enquiry_message" name="enquiry_message" rows="3" placeholder="<?php esc_attr_e( "Anything you'd like us to know", 'excellence-school' ); ?>"></textarea>
-						</div>
-						<button type="submit" class="btn btn-gold btn-arrow" style="width:100%"
-						        data-en="Submit Enquiry" data-hi="पूछताछ भेजें">
-							<?php esc_html_e( 'Submit Enquiry', 'excellence-school' ); ?>
-						</button>
-						<p class="form-note" data-en="For confirmed admissions, please visit the school office." data-hi="पुष्ट प्रवेश हेतु कृपया विद्यालय कार्यालय आएं।">
-							<?php esc_html_e( 'For confirmed admissions, please visit the school office.', 'excellence-school' ); ?>
-						</p>
-					</form>
-					<?php endif; ?>
 				</div>
 
 				<div class="apply-aside reveal">

@@ -249,6 +249,13 @@ a.pill.gold:hover { background: rgba(201,162,58,.22); border-color: rgba(201,162
   text-transform: uppercase;
   margin-bottom: 20px;
 }
+.footer-widgets {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px;
+  margin-top: 44px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,.12);
+}
+.footer-widget { min-width: 0; }
+.footer-widget img, .footer-widget iframe, .footer-widget table { max-width: 100%; }
+.footer-widget a { text-decoration: underline; text-decoration-color: rgba(255,255,255,.3); }
 .footer-rule { height: 1px; background: rgba(255,255,255,.12); margin: 44px 0 28px; }
 .social {
   width: 40px;

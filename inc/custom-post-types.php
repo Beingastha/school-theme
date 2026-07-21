@@ -76,10 +76,12 @@ function esb_register_post_types(): void {
 				'add_new_item'  => esc_html__( 'Add Facility', 'excellence-school' ),
 				'edit_item'     => esc_html__( 'Edit Facility', 'excellence-school' ),
 			],
-			'public'       => false,
+			'public'       => true,
 			'show_ui'      => true,
 			'show_in_rest' => true,
 			'supports'     => [ 'title', 'editor', 'thumbnail', 'excerpt' ],
+			'has_archive'  => false,
+			'rewrite'      => [ 'slug' => 'facility' ],
 			'menu_icon'    => 'dashicons-building',
 		]
 	);

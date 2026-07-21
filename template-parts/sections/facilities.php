@@ -34,7 +34,7 @@ $static = [
 			<?php if ( $query->have_posts() ) : ?>
 				<?php while ( $query->have_posts() ) : $query->the_post(); ?>
 				<?php $fac_tag = get_post_meta( get_the_ID(), '_esb_fac_tag', true ); ?>
-				<div class="fac-card reveal">
+				<a class="fac-card reveal" href="<?php the_permalink(); ?>">
 					<?php esb_thumb( get_the_ID(), 'medium_large', get_the_title(), '', true ); ?>
 					<div class="body">
 						<?php if ( $fac_tag ) : ?>
@@ -43,7 +43,7 @@ $static = [
 						<h3><?php the_title(); ?></h3>
 						<p><?php the_excerpt(); ?></p>
 					</div>
-				</div>
+				</a>
 				<?php endwhile; wp_reset_postdata(); ?>
 			<?php else : ?>
 				<?php foreach ( $static as $fac ) : ?>

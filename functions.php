@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ESB_VERSION', '2.4.14' );
+define( 'ESB_VERSION', '2.4.15' );
 define( 'ESB_DIR', get_template_directory() );
 define( 'ESB_URI', get_template_directory_uri() );
 
@@ -36,15 +36,155 @@ function esb_setup(): void {
    ========================================================================= */
 add_action( 'widgets_init', 'esb_register_sidebars' );
 function esb_register_sidebars(): void {
-	register_sidebar( [
-		'name'          => esc_html__( 'Footer Widgets', 'excellence-school' ),
-		'id'            => 'footer-widgets',
-		'description'   => esc_html__( 'Shown as a full-width row in the site footer, above the copyright line. Add a Calendar, Text, or any plugin widget (e.g. an events calendar) here — Appearance → Widgets.', 'excellence-school' ),
+	$column_widget_args = [
 		'before_widget' => '<div class="footer-widget %2$s">',
 		'after_widget'  => '</div>',
 		'before_title'  => '<h4>',
 		'after_title'   => '</h4>',
-	] );
+	];
+
+	$columns = [
+		'footer-col-1' => esc_html__( 'Footer Column 1', 'excellence-school' ),
+		'footer-col-2' => esc_html__( 'Footer Column 2', 'excellence-school' ),
+		'footer-col-3' => esc_html__( 'Footer Column 3', 'excellence-school' ),
+		'footer-col-4' => esc_html__( 'Footer Column 4', 'excellence-school' ),
+	];
+	foreach ( $columns as $id => $name ) {
+		register_sidebar(
+			array_merge(
+				$column_widget_args,
+				[
+					'name'        => $name,
+					'id'          => $id,
+					'description' => esc_html__( 'One of the four footer columns. Add, remove or reorder widgets here — Appearance → Widgets. Each column falls back to its original default content until you add a widget.', 'excellence-school' ),
+				]
+			)
+		);
+	}
+
+	register_sidebar(
+		array_merge(
+			$column_widget_args,
+			[
+				'name'        => esc_html__( 'Footer Widgets', 'excellence-school' ),
+				'id'          => 'footer-widgets',
+				'description' => esc_html__( 'Shown as a full-width row in the site footer, above the copyright line. Add a Calendar, Text, or any plugin widget (e.g. an events calendar) here — Appearance → Widgets.', 'excellence-school' ),
+			]
+		)
+	);
+}
+
+/* =========================================================================
+   Footer Widgets — Brand & Contact
+   ========================================================================= */
+add_action( 'widgets_init', 'esb_register_footer_widgets' );
+function esb_register_footer_widgets(): void {
+	register_widget( 'ESB_Footer_Brand_Widget' );
+	register_widget( 'ESB_Footer_Contact_Widget' );
+}
+
+/**
+ * Renders the school logo, name, description and social links using the
+ * live Customizer values, so this stays in sync with School Settings even
+ * though it's placed as a movable/removable widget.
+ */
+class ESB_Footer_Brand_Widget extends WP_Widget {
+	public function __construct() {
+		parent::__construct(
+			'esb_footer_brand',
+			esc_html__( 'ESB: School Brand', 'excellence-school' ),
+			[ 'description' => esc_html__( 'Logo, school name, description and social links — pulled from Appearance → Customize → School Settings.', 'excellence-school' ) ]
+		);
+	}
+
+	public function widget( $args, $instance ): void {
+		$school_name = esb_opt( 'esb_school_name', 'School for Excellence' );
+		$subtitle    = esb_opt( 'esb_school_subtitle', 'Subhash Nagar · Bhopal' );
+		$facebook    = esb_opt( 'esb_facebook', '' );
+		$instagram   = esb_opt( 'esb_instagram', '' );
+		$linkedin    = esb_opt( 'esb_linkedin', '' );
+		$youtube     = esb_opt( 'esb_youtube', '' );
+
+		echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		?>
+		<div class="fbrand">
+			<?php esb_logo(); ?>
+			<div>
+				<div class="n1" data-en="<?php echo esc_attr( $school_name ); ?>" data-hi="उत्कृष्टता विद्यालय">
+					<?php echo esc_html( $school_name ); ?>
+				</div>
+				<div class="n2" data-en="<?php echo esc_attr( $subtitle ); ?>" data-hi="सुभाष नगर · भोपाल">
+					<?php echo esc_html( $subtitle ); ?>
+				</div>
+			</div>
+		</div>
+		<p class="fdesc" data-en="A Government School of Excellence under the Department of School Education, Government of Madhya Pradesh — committed to nurturing tomorrow's leaders through quality education and holistic development."
+		   data-hi="स्कूल शिक्षा विभाग, मध्य प्रदेश शासन के अंतर्गत एक शासकीय उत्कृष्टता विद्यालय — गुणवत्तापूर्ण शिक्षा व समग्र विकास के माध्यम से कल के नेताओं को तैयार करने हेतु प्रतिबद्ध।">
+			<?php esc_html_e( 'A Government School of Excellence under the Department of School Education, Government of Madhya Pradesh — committed to nurturing tomorrow\'s leaders through quality education and holistic development.', 'excellence-school' ); ?>
+		</p>
+		<div class="socials">
+			<?php if ( $facebook ) : ?>
+			<a class="social" href="<?php echo esc_url( $facebook ); ?>" aria-label="Facebook" rel="noopener noreferrer" target="_blank">f</a>
+			<?php endif; ?>
+			<?php if ( $instagram ) : ?>
+			<a class="social" href="<?php echo esc_url( $instagram ); ?>" aria-label="Instagram" rel="noopener noreferrer" target="_blank">ig</a>
+			<?php endif; ?>
+			<?php if ( $linkedin ) : ?>
+			<a class="social" href="<?php echo esc_url( $linkedin ); ?>" aria-label="LinkedIn" rel="noopener noreferrer" target="_blank">in</a>
+			<?php endif; ?>
+			<?php if ( $youtube ) : ?>
+			<a class="social" href="<?php echo esc_url( $youtube ); ?>" aria-label="YouTube" rel="noopener noreferrer" target="_blank">yt</a>
+			<?php endif; ?>
+		</div>
+		<?php
+		echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	public function form( $instance ): void {
+		echo '<p>' . esc_html__( 'No settings here — content is pulled live from Appearance → Customize → School Settings.', 'excellence-school' ) . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+}
+
+/**
+ * Renders address, phone, email and UDISE code using the live Customizer
+ * values, so this stays in sync with School Settings even though it's
+ * placed as a movable/removable widget.
+ */
+class ESB_Footer_Contact_Widget extends WP_Widget {
+	public function __construct() {
+		parent::__construct(
+			'esb_footer_contact',
+			esc_html__( 'ESB: School Contact', 'excellence-school' ),
+			[ 'description' => esc_html__( 'Address, phone, email and UDISE code — pulled from Appearance → Customize → School Settings.', 'excellence-school' ) ]
+		);
+	}
+
+	public function widget( $args, $instance ): void {
+		$address = esb_opt( 'esb_address', 'Subhash Shivaji Nagar, Bhopal, MP – 462016' );
+		$phone   = esb_opt( 'esb_phone', '+91 755-255-2490' );
+		$email   = esb_opt( 'esb_email', 'govt.hss.excellence.subhash@gmail.com' );
+		$udise   = esb_opt( 'esb_udise', '23320301711' );
+
+		echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $args['before_title'] . esc_html__( 'Contact', 'excellence-school' ) . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		?>
+		<ul>
+			<li data-en="<?php echo esc_attr( $address ); ?>">
+				<?php echo esc_html( $address ); ?>
+			</li>
+			<li><a href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $phone ) ); ?>"><?php echo esc_html( $phone ); ?></a></li>
+			<li><a href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a></li>
+			<li data-en="UDISE Code: <?php echo esc_attr( $udise ); ?>" data-hi="यूडाइस कोड: <?php echo esc_attr( $udise ); ?>">
+				<?php echo esc_html( 'UDISE Code: ' . $udise ); ?>
+			</li>
+		</ul>
+		<?php
+		echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	public function form( $instance ): void {
+		echo '<p>' . esc_html__( 'No settings here — content is pulled live from Appearance → Customize → School Settings.', 'excellence-school' ) . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
 }
 
 /* =========================================================================

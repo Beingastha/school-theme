@@ -256,6 +256,25 @@ a.pill.gold:hover { background: rgba(201,162,58,.22); border-color: rgba(201,162
 .footer-widget { min-width: 0; }
 .footer-widget img, .footer-widget iframe, .footer-widget table { max-width: 100%; }
 .footer-widget a { text-decoration: underline; text-decoration-color: rgba(255,255,255,.3); }
+
+/* Events Calendar widget on the dark footer background */
+.footer-widget .tribe-events-widget,
+.footer-widget .tribe-common {
+  background: transparent; color: rgba(255,255,255,.74); --tribe-common-font-family: var(--ff-body);
+}
+.footer-widget .tribe-events-widget-events-list__header-title,
+.footer-widget .tribe-events-widget a,
+.footer-widget .tribe-events-widget h1,
+.footer-widget .tribe-events-widget h2,
+.footer-widget .tribe-events-widget h3 { color: #fff; }
+.footer-widget .tribe-events-widget a:hover { color: var(--gold-300); }
+.footer-widget .tribe-events-c-messages__message,
+.footer-widget .tribe-events-c-messages__message-text,
+.footer-widget .tribe-events-calendar-list__event-date-tag,
+.footer-widget .tribe-events-calendar-list__event-title,
+.footer-widget .tribe-events-calendar-list__event-datetime { color: rgba(255,255,255,.74); }
+.footer-widget .tribe-common-c-svgicon { fill: rgba(255,255,255,.5); stroke: rgba(255,255,255,.5); }
+.footer-widget .tribe-events-widget-events-list__event { border-color: rgba(255,255,255,.12); }
 .footer-rule { height: 1px; background: rgba(255,255,255,.12); margin: 44px 0 28px; }
 .social {
   width: 40px;

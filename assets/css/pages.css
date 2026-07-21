@@ -417,12 +417,23 @@
 .tribe-events h2[class*="__title"] { font-family: var(--ff-display); }
 
 /* --- Search / events bar: slim it and match theme form styling --- */
-.tribe-events .tribe-events-c-events-bar { max-width: 560px; margin: 0 auto 22px; box-shadow: none; }
+.tribe-events .tribe-events-c-events-bar { max-width: 620px; margin: 0 auto 22px; box-shadow: none; }
+/* Strip the wrapper boxes so only the input itself is a single field (no nested/double border). */
+.tribe-events .tribe-events-c-events-bar__search,
 .tribe-events .tribe-events-c-events-bar__search-container,
+.tribe-events .tribe-events-c-search__input-group,
+.tribe-events .tribe-events-c-search__input-control {
+  border: none !important; background: transparent !important; box-shadow: none !important;
+}
+/* The one real field: cream box, keep generous left padding so the search icon never overlaps the text. */
 .tribe-events .tribe-events-c-search__input {
   border-radius: 10px !important; background: var(--cream) !important; border: 1px solid var(--line) !important;
+  padding: 11px 16px 11px 44px !important; font-size: 15px !important; box-shadow: none !important; height: auto !important;
 }
-.tribe-events .tribe-events-c-search__input { padding: 11px 14px !important; font-size: 15px !important; box-shadow: none !important; }
+.tribe-events .tribe-events-c-search__input:focus { border-color: var(--green-600) !important; box-shadow: 0 0 0 3px rgba(17,96,60,.12) !important; }
+/* Keep the magnifier icon inside the field, vertically centred, clear of the text. */
+.tribe-events .tribe-events-c-search__input-control { position: relative; }
+.tribe-events .tribe-events-c-search__input-control-icon-svg { left: 16px !important; z-index: 1; }
 .tribe-events .tribe-events-c-events-bar__search-button,
 .tribe-events .tribe-events-c-search__button {
   background: var(--green-700) !important; border-radius: 10px !important; font-weight: 600 !important;

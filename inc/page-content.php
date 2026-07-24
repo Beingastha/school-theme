@@ -958,7 +958,7 @@ function esb_pg_tab_admissions(): void {
 		</div>
 		<div class="esb-pg-group-title" style="margin-top:20px"><?php esc_html_e( 'Admissions Office Box', 'excellence-school' ); ?></div>
 		<div class="esb-pg-row">
-			<?php esb_pg_text( 'adm_office_address', 'Address', 'Govt. Subhash Excellence Higher Secondary School, Bhopal' ); ?>
+			<?php esb_pg_text( 'adm_office_address', 'Address', 'Govt. Subhash Excellence Higher Secondary School, Bhopal', '', 'शासकीय सुभाष उत्कृष्ट उच्चतर माध्यमिक विद्यालय, भोपाल' ); ?>
 			<?php esb_pg_text( 'adm_office_phone', 'Phone (as displayed)', '+0755-2552490' ); ?>
 		</div>
 		<div class="esb-pg-row" style="margin-top:10px">

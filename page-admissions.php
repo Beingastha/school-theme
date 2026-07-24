@@ -255,7 +255,7 @@ $office_hours  = esb_pg( 'adm_office_hours', 'Mon – Sat · 8:00 AM – 4:00 PM
 				</p>
 				<div class="help-box" style="text-align:left;margin:32px 0">
 					<h4 data-en="Admissions Office" data-hi="प्रवेश कार्यालय"><?php esc_html_e( 'Admissions Office', 'excellence-school' ); ?></h4>
-					<p data-en="<?php echo esc_attr( $office_addr ); ?>"><?php echo esc_html( $office_addr ); ?></p>
+					<p data-en="<?php echo esc_attr( $office_addr ); ?>" data-hi="<?php echo esc_attr( esb_pg_hi( 'adm_office_address', 'शासकीय सुभाष उत्कृष्ट उच्चतर माध्यमिक विद्यालय, भोपाल' ) ); ?>"><?php echo esc_html( $office_addr ); ?></p>
 					<p style="margin-top:12px">
 						<a href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $office_phone ) ); ?>"><?php echo esc_html( $office_phone ); ?></a>
 					</p>

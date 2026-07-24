@@ -27,7 +27,7 @@ $maps_embed = esb_opt( 'esb_maps_embed', '' );
 						<span class="ic"><span class="diamond"></span></span>
 						<div>
 							<div class="k" data-en="Address" data-hi="पता"><?php esc_html_e( 'Address', 'excellence-school' ); ?></div>
-							<div class="v" data-en="<?php echo esc_attr( $address ); ?>" data-hi="सुभाष शिवाजी नगर, भोपाल, मध्य प्रदेश – 462016">
+							<div class="v" data-en="<?php echo esc_attr( $address ); ?>" data-hi="<?php echo esc_attr( esb_opt( 'esb_address_hi', 'सुभाष शिवाजी नगर, भोपाल, मध्य प्रदेश – 462016' ) ); ?>">
 								<?php echo esc_html( $address ); ?>
 							</div>
 						</div>
@@ -56,7 +56,7 @@ $maps_embed = esb_opt( 'esb_maps_embed', '' );
 						<span class="ic"><span class="diamond"></span></span>
 						<div>
 							<div class="k" data-en="Office Hours" data-hi="कार्यालय समय"><?php esc_html_e( 'Office Hours', 'excellence-school' ); ?></div>
-							<div class="v" data-en="<?php echo esc_attr( $hours ); ?>" data-hi="सोमवार – शनिवार · प्रातः 8 – सायं 4">
+							<div class="v" data-en="<?php echo esc_attr( $hours ); ?>" data-hi="<?php echo esc_attr( esb_opt( 'esb_hours_hi', 'सोमवार – शनिवार · प्रातः 8 – सायं 4' ) ); ?>">
 								<?php echo esc_html( $hours ); ?>
 							</div>
 						</div>

@@ -42,9 +42,14 @@
 				<?php echo esc_html( esb_opt( 'esb_phone', '+91 755-255-2490' ) ); ?>
 			</a>
 			<?php esb_dot(); ?>
+			<?php
+			$esb_hours_short    = esb_opt( 'esb_hours_short', 'Mon–Sat · 8 AM – 4 PM' );
+			$esb_hours_short_hi = esb_opt( 'esb_hours_short_hi', 'सोम–शनि · प्रातः 8 – सायं 4' );
+			?>
 			<a href="mailto:<?php echo esc_attr( esb_opt( 'esb_email', 'govt.hss.excellence.subhash@gmail.com' ) ); ?>"
-			   data-en="Mon–Sat · 8 AM – 4 PM" data-hi="सोम–शनि · प्रातः 8 – सायं 4">
-				Mon–Sat · 8 AM – 4 PM
+			   data-en="<?php echo esc_attr( $esb_hours_short ); ?>"
+			   data-hi="<?php echo esc_attr( $esb_hours_short_hi ); ?>">
+				<?php echo esc_html( $esb_hours_short ); ?>
 			</a>
 		</div>
 	</div>

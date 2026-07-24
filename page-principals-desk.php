@@ -68,8 +68,8 @@ $highlights = [
 					echo $letter; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					?>
 					<div class="sign">
-						<div class="nm"><?php echo esc_html( $principal_name ); ?></div>
-						<div class="rl"><?php echo esc_html( $principal_role ); ?></div>
+						<div class="nm" data-en="<?php echo esc_attr( $principal_name ); ?>" data-hi="<?php echo esc_attr( esb_opt( 'esb_principal_name_hi', 'श्री सुधाकर पाराशर' ) ); ?>"><?php echo esc_html( $principal_name ); ?></div>
+						<div class="rl" data-en="<?php echo esc_attr( $principal_role ); ?>" data-hi="<?php echo esc_attr( esb_opt( 'esb_principal_role_hi', 'प्राचार्य, शासकीय सुभाष उत्कृष्ट उ.मा. विद्यालय, भोपाल' ) ); ?>"><?php echo esc_html( $principal_role ); ?></div>
 					</div>
 				</div>
 			</div>

@@ -68,10 +68,14 @@ function esb_customizer_register( WP_Customize_Manager $wp_customize ): void {
 	);
 
 	$contact_fields = [
-		'esb_phone'   => [ esc_html__( 'Phone Number', 'excellence-school' ),  '+91 755-255-2490' ],
-		'esb_email'   => [ esc_html__( 'Email Address', 'excellence-school' ), 'govt.hss.excellence.subhash@gmail.com' ],
-		'esb_address' => [ esc_html__( 'Street Address', 'excellence-school' ), 'Subhash Shivaji Nagar, Bhopal, Madhya Pradesh – 462016' ],
-		'esb_hours'   => [ esc_html__( 'Office Hours', 'excellence-school' ),  'Monday – Saturday · 8:00 AM – 4:00 PM' ],
+		'esb_phone'         => [ esc_html__( 'Phone Number', 'excellence-school' ),  '+91 755-255-2490' ],
+		'esb_email'         => [ esc_html__( 'Email Address', 'excellence-school' ), 'govt.hss.excellence.subhash@gmail.com' ],
+		'esb_address'       => [ esc_html__( 'Street Address', 'excellence-school' ), 'Subhash Shivaji Nagar, Bhopal, Madhya Pradesh – 462016' ],
+		'esb_address_hi'    => [ esc_html__( 'Street Address (Hindi)', 'excellence-school' ), 'सुभाष शिवाजी नगर, भोपाल, मध्य प्रदेश – 462016' ],
+		'esb_hours'         => [ esc_html__( 'Office Hours (full — contact section)', 'excellence-school' ),  'Monday – Saturday · 8:00 AM – 4:00 PM' ],
+		'esb_hours_hi'      => [ esc_html__( 'Office Hours — full (Hindi)', 'excellence-school' ), 'सोमवार – शनिवार · प्रातः 8 – सायं 4' ],
+		'esb_hours_short'   => [ esc_html__( 'Office Hours — short, top bar (English)', 'excellence-school' ), 'Mon–Sat · 8 AM – 4 PM' ],
+		'esb_hours_short_hi'=> [ esc_html__( 'Office Hours — short, top bar (Hindi)', 'excellence-school' ), 'सोम–शनि · प्रातः 8 – सायं 4' ],
 	];
 
 	foreach ( $contact_fields as $key => [ $label, $default ] ) {
@@ -147,8 +151,14 @@ function esb_customizer_register( WP_Customize_Manager $wp_customize ): void {
 	$wp_customize->add_setting( 'esb_principal_name', [ 'default' => 'Mr. Sudhakar Parashar', 'sanitize_callback' => 'sanitize_text_field' ] );
 	$wp_customize->add_control( 'esb_principal_name', [ 'label' => esc_html__( 'Principal Name', 'excellence-school' ), 'section' => 'esb_principal', 'type' => 'text' ] );
 
+	$wp_customize->add_setting( 'esb_principal_name_hi', [ 'default' => 'श्री सुधाकर पाराशर', 'sanitize_callback' => 'sanitize_text_field' ] );
+	$wp_customize->add_control( 'esb_principal_name_hi', [ 'label' => esc_html__( 'Principal Name (Hindi)', 'excellence-school' ), 'section' => 'esb_principal', 'type' => 'text' ] );
+
 	$wp_customize->add_setting( 'esb_principal_role', [ 'default' => 'Principal, Govt. Subhash Excellence H.S. School, Bhopal', 'sanitize_callback' => 'sanitize_text_field' ] );
 	$wp_customize->add_control( 'esb_principal_role', [ 'label' => esc_html__( 'Principal Role/Title', 'excellence-school' ), 'section' => 'esb_principal', 'type' => 'text' ] );
+
+	$wp_customize->add_setting( 'esb_principal_role_hi', [ 'default' => 'प्राचार्य, शासकीय सुभाष उत्कृष्ट उ.मा. विद्यालय, भोपाल', 'sanitize_callback' => 'sanitize_text_field' ] );
+	$wp_customize->add_control( 'esb_principal_role_hi', [ 'label' => esc_html__( 'Principal Role/Title (Hindi)', 'excellence-school' ), 'section' => 'esb_principal', 'type' => 'text' ] );
 
 	$wp_customize->add_setting( 'esb_principal_quote', [
 		'default'           => 'Our mission is simple — to ensure that every child who walks through our gates leaves with the knowledge, character and confidence to lead. Excellence here is not a privilege; it is a promise we keep to every family.',

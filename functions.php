@@ -485,6 +485,11 @@ require_once ESB_DIR . '/inc/page-content.php';
 require_once ESB_DIR . '/inc/page-translations.php';
 
 /* =========================================================================
+   Website Guide (admin handbook for non-technical staff)
+   ========================================================================= */
+require_once ESB_DIR . '/inc/admin-guide.php';
+
+/* =========================================================================
    Template Tags / Helpers
    ========================================================================= */
 
